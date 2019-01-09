@@ -23,3 +23,6 @@ You can also make changes to the grid later and call BuildGrid, but you must spe
 # More about Grids
 To center something inside a grid, it's easiest right now to have two empty columns/rows set as "fill". This way they fill evenly on either side of the item. 
 Grids can be added to grids, so you can make some fairly complex menus. 
+
+# Demo
+In the demo you can right click to move the menu around, and use keys Q and E to rotate the menu to see how the UI items stay attached to the menu.
