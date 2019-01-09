@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Users/Admin/source/repos/Intuitive GUI for Monogame/Demo/Content/Font/Calibri48.fnt</SourceFile>
+  <SourceTime>2018-11-26T07:59:47.3746313+01:00</SourceTime>
+  <DestFile>C:/Users/Admin/source/repos/Intuitive GUI for Monogame/Demo/Content/bin/DesktopGL/Font/Calibri48.xnb</DestFile>
+  <DestTime>2019-01-08T15:35:20.1537278+01:00</DestTime>
+  <Importer>BitmapFontImporter</Importer>
+  <ImporterTime>2018-05-23T20:26:24+02:00</ImporterTime>
+  <Processor>BitmapFontProcessor</Processor>
+  <ProcessorTime>2018-05-23T20:26:24+02:00</ProcessorTime>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intuitive GUI for Monogame", "Intuitive GUI for Monogame\Intuitive GUI for Monogame.csproj", "{DD84A18B-7117-45AF-9906-D377384193B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{94623A51-324C-4FE1-9F6C-DDA1DE11935D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DD84A18B-7117-45AF-9906-D377384193B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD84A18B-7117-45AF-9906-D377384193B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD84A18B-7117-45AF-9906-D377384193B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD84A18B-7117-45AF-9906-D377384193B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94623A51-324C-4FE1-9F6C-DDA1DE11935D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94623A51-324C-4FE1-9F6C-DDA1DE11935D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94623A51-324C-4FE1-9F6C-DDA1DE11935D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94623A51-324C-4FE1-9F6C-DDA1DE11935D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {081AB8C1-7365-487E-B119-300AA93C899C}
+	EndGlobalSection
+EndGlobal
