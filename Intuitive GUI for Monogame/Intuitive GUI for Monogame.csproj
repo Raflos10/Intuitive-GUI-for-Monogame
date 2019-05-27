@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Global.cs" />
+    <Compile Include="MenuSystem.cs" />
     <Compile Include="Items\Button.cs" />
     <Compile Include="Items\Grid.cs" />
     <Compile Include="Items\Image.cs" />

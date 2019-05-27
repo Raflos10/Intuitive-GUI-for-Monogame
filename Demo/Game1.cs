@@ -15,6 +15,7 @@ namespace Demo
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        MenuSystem menuSystem;
 
         public const int VirtualWidth = 1920;
         public const int VirtualHeight = 1080;
@@ -41,7 +42,7 @@ namespace Demo
                 graphics.IsFullScreen = false;
                 graphics.ApplyChanges();
                 UpdateResolutionMatrix();
-                Global.ResolutionMatrix = ResolutionMatrix;
+                menuSystem.ResolutionMatrix = ResolutionMatrix;
             }
             else
             {
@@ -50,7 +51,7 @@ namespace Demo
                 graphics.IsFullScreen = true;
                 graphics.ApplyChanges();
                 UpdateResolutionMatrix();
-                Global.ResolutionMatrix = ResolutionMatrix;
+                menuSystem.ResolutionMatrix = ResolutionMatrix;
             }
         }
 
@@ -62,8 +63,11 @@ namespace Demo
         /// </summary>
         protected override void Initialize()
         {
+            menuSystem = new MenuSystem(this);
+            Components.Add(menuSystem);
+            
             UpdateResolutionMatrix();
-            Global.ResolutionMatrix = ResolutionMatrix;
+            menuSystem.ResolutionMatrix = ResolutionMatrix;
 
             IsMouseVisible = true;
 
@@ -79,9 +83,9 @@ namespace Demo
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Menu1 = new Demo_Menu.Menu1(Content.Load<Texture2D>("test_menu"), Content.Load<Texture2D>("test_button"), 
+            Menu1 = new Demo_Menu.Menu1(Content.Load<Texture2D>("test_menu"), Content.Load<Texture2D>("test_button"),
                 Content.Load<Texture2D>("test_button_s"), Content.Load<BitmapFont>("Font/Calibri48"));
-            Global.ActiveMenus.Add(Menu1);
+            menuSystem.ActiveMenus.Add(Menu1);
             Menu1.Position = new Vector2(VirtualWidth * .5f, VirtualHeight * .5f);
             //Menu1.Position = new Vector2((VirtualWidth - Menu1.Width) * .5f, 100);
             //font = Content.Load<BitmapFont>("Fonts/Calibri48");
@@ -110,8 +114,6 @@ namespace Demo
 
             if (Input.IsKeyPressed(Keys.LeftAlt) && Input.IsKeyTriggered(Keys.Enter))
                 ToggleFullscreen();
-
-            Global.Update(gameTime);
 
             if (Input.IsRightMouseButtonDown())
                 Menu1.Position = Vector2.Transform(new Vector2(Input.MouseState.Position.X, Input.MouseState.Position.Y), Matrix.Invert(ResolutionMatrix));

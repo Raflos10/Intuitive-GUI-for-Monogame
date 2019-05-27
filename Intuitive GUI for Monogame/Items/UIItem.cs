@@ -22,8 +22,6 @@ namespace Intuitive_GUI_for_Monogame.Items
         protected Matrix ParentMatrix { get; private set; }
         public Margin Margin { get; set; } = Margin.Zero;
 
-        public abstract void Update(GameTime gameTime);
-
         public virtual void UpdateTransformProperties(Matrix parentMatrix)
         {
             this.ParentMatrix = parentMatrix;

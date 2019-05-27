@@ -130,7 +130,6 @@ namespace Intuitive_GUI_for_Monogame
         {
             if (State == States.Active)
             {
-                if (Global.UsingMouse) Global.UsingMouse = false;
                 if (Item is Items.Selectable selectable)
                 {
                     selectable.InputTrigger(input);
@@ -154,15 +153,11 @@ namespace Intuitive_GUI_for_Monogame
             State = States.VisibleInactive;
         }
 
-        public virtual void Update(GameTime gameTime)
+        public void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 mousePosition)
         {
             if (State == States.Active)
-            {
-                if (Global.UsingMouse)
-                    Item?.Update(gameTime);
-                else if (Global.MouseState.Position != Global.MouseStateLast.Position)
-                    Global.UsingMouse = true;
-            }
+                if (Item is Items.Selectable selectable)
+                    selectable.MouseUpdate(mouseState, mouseStateLast, mousePosition);
         }
 
         void UpdateTransform()

@@ -33,11 +33,6 @@ namespace Intuitive_GUI_for_Monogame.Items
             this.Margin = margin ?? Margin.Zero;
         }
 
-        public override void Update(GameTime gameTime)
-        {
-
-        }
-
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             spriteBatch.Draw(Texture, Position, null, Color.White, Rotation, Vector2.Zero, Scale, SpriteEffects.None, 0.0f);

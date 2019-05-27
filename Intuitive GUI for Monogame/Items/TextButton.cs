@@ -49,11 +49,6 @@ namespace Intuitive_GUI_for_Monogame.Items
             base.ChangeState(state);
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
-
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             spriteBatch.DrawString(font, text, Position, colors[State], Rotation, Vector2.Zero, Scale, SpriteEffects.None, 0f);

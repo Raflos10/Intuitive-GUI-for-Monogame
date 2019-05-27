@@ -48,18 +48,18 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public EventArgs Args;
 
-        public override void Update(GameTime gameTime)
+        public virtual void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 virtualPosition)
         {
-            Vector2 mousePosition = Vector2.Transform(Global.MousePosition, Matrix.Invert(ParentMatrix));
+            Vector2 mousePosition = Vector2.Transform(virtualPosition, Matrix.Invert(ParentMatrix));
             if (mousePosition.X > 0 && mousePosition.Y > 0 && mousePosition.X < Width && mousePosition.Y < Height)
             {
                 if (!ContainsMouse)
                     ContainsMouse = true;
 
-                if (Global.MouseState.LeftButton == ButtonState.Pressed && Global.MouseStateLast.LeftButton == ButtonState.Released)
+                if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
                     OnMousePress?.Invoke(this, Args);
 
-                if (Global.MouseStateLast.LeftButton == ButtonState.Pressed && Global.MouseState.LeftButton == ButtonState.Released)
+                if (mouseStateLast.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
                     OnMouseRelease?.Invoke(this, Args);
             }
             else

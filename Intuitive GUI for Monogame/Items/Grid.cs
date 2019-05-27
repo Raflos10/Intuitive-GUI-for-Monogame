@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Intuitive_GUI_for_Monogame.Items
 {
@@ -397,10 +398,11 @@ namespace Intuitive_GUI_for_Monogame.Items
         //        SelectionOutOfBounds = true;
         //}
 
-        public override void Update(GameTime gameTime)
+        public override void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 virtualPosition)
         {
-            for (int i = 0; i < GridEntries.Count; i++)
-                _gridEntries[i].UIItem.Update(gameTime);
+            foreach (GridEntry gridEntry in GridEntries)
+                if (gridEntry.UIItem is Selectable selectable)
+                    selectable.MouseUpdate(mouseState, mouseStateLast, virtualPosition);
         }
 
         public override void UpdateTransformProperties(Matrix parentMatrix)

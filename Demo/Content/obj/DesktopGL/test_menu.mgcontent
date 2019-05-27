@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Admin/source/repos/Intuitive GUI for Monogame/Demo/Content/test_menu.png</SourceFile>
-  <SourceTime>2018-12-15T07:55:08.4177217+01:00</SourceTime>
-  <DestFile>C:/Users/Admin/source/repos/Intuitive GUI for Monogame/Demo/Content/bin/DesktopGL/test_menu.xnb</DestFile>
-  <DestTime>2019-01-09T09:48:54.5335318+01:00</DestTime>
+  <SourceFile>C:/Users/Admin/source/repos/Intuitive-GUI-for-Monogame/Demo/Content/test_menu.png</SourceFile>
+  <SourceTime>2018-12-14T22:55:08.4177217-08:00</SourceTime>
+  <DestFile>C:/Users/Admin/source/repos/Intuitive-GUI-for-Monogame/Demo/Content/bin/DesktopGL/test_menu.xnb</DestFile>
+  <DestTime>2019-01-29T11:38:33.0208382-08:00</DestTime>
   <Importer>TextureImporter</Importer>
-  <ImporterTime>2017-03-01T16:05:36+01:00</ImporterTime>
+  <ImporterTime>2017-03-01T07:05:36-08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2017-03-01T16:05:36+01:00</ProcessorTime>
+  <ProcessorTime>2017-03-01T07:05:36-08:00</ProcessorTime>
   <Parameters>
     <Key>ColorKeyColor</Key>
     <Value>255,0,255,255</Value>
