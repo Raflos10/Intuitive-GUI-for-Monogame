@@ -16,12 +16,13 @@ namespace Intuitive_GUI_for_Monogame
     {
         public List<Menu> ActiveMenus { get; private set; } = new List<Menu>();
         public Matrix ResolutionMatrix { get; set; } = Matrix.Identity;
+        private SpriteBatch spriteBatch;
 
         private MouseState mouseState, mouseStateLast;
 
-        public MenuSystem(Game game) : base(game)
+        public MenuSystem(Game game, SpriteBatch spriteBatch) : base(game)
         {
-
+            this.spriteBatch = spriteBatch;
         }
 
         public override void Update(GameTime gameTime)
@@ -52,6 +53,16 @@ namespace Intuitive_GUI_for_Monogame
         Vector2 GetVirtualPosition(Vector2 position)
         {
             return Vector2.Transform(position, Matrix.Invert(ResolutionMatrix));
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            spriteBatch.Begin(transformMatrix: ResolutionMatrix);
+            foreach (Menu menu in ActiveMenus)
+                menu.Draw(spriteBatch, gameTime);
+            spriteBatch.End();
         }
     }
 }

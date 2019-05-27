@@ -9,20 +9,18 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-using MonoGame.Extended.BitmapFonts;
-
 namespace Intuitive_GUI_for_Monogame.Items
 {
     public class TextButton : Button
     {
-        private BitmapFont font;
+        private SpriteFont font;
         private string text;
 
         public Color fontColor;
 
         private Dictionary<States, Color> colors;
 
-        public TextButton(BitmapFont font, string text, Margin margin = null)
+        public TextButton(SpriteFont font, string text, Margin margin = null)
         {
             this.font = font;
             this.text = text;
@@ -39,8 +37,8 @@ namespace Intuitive_GUI_for_Monogame.Items
                 };
             ChangeState(States.None);
 
-            Width = (int)font.MeasureString(text).Width;
-            Height = (int)font.MeasureString(text).Height;
+            Width = (int)font.MeasureString(text).X;
+            Height = (int)font.MeasureString(text).Y;
         }
 
         public override void ChangeState(States state)

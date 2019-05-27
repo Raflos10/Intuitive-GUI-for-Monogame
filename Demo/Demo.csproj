@@ -118,8 +118,11 @@
     <None Include="app.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\Intuitive GUI for Monogame MGE Items\Intuitive GUI for Monogame MGE Items.csproj">
+      <Project>{8dd45870-950f-4a24-9172-68a061e7f9e7}</Project>
+      <Name>Intuitive GUI for Monogame MGE Items</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Intuitive GUI for Monogame\Intuitive GUI for Monogame.csproj">
       <Project>{dd84a18b-7117-45af-9906-d377384193b2}</Project>
       <Name>Intuitive GUI for Monogame</Name>

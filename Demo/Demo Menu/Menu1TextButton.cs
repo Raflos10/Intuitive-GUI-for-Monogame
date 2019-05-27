@@ -10,11 +10,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 using MonoGame.Extended.BitmapFonts;
 
+using Intuitive_GUI_for_Monogame;
 using Intuitive_GUI_for_Monogame.Items;
+using Intuitive_GUI_for_Monogame_MGE_Items;
 
 namespace Demo.Demo_Menu
 {
-    public class Menu1TextButton : TextButton
+    public class Menu1TextButton : Intuitive_GUI_for_Monogame_MGE_Items.BMTextButton
     {
         public Menu1TextButton(BitmapFont font, string text, EventHandler e, EventArgs args, Margin margin = null) : base(font, text, margin)
         {

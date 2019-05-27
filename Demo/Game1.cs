@@ -63,11 +63,7 @@ namespace Demo
         /// </summary>
         protected override void Initialize()
         {
-            menuSystem = new MenuSystem(this);
-            Components.Add(menuSystem);
-            
             UpdateResolutionMatrix();
-            menuSystem.ResolutionMatrix = ResolutionMatrix;
 
             IsMouseVisible = true;
 
@@ -82,6 +78,10 @@ namespace Demo
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            menuSystem = new MenuSystem(this, spriteBatch);
+            menuSystem.ResolutionMatrix = ResolutionMatrix;
+            Components.Add(menuSystem);
 
             Menu1 = new Demo_Menu.Menu1(Content.Load<Texture2D>("test_menu"), Content.Load<Texture2D>("test_button"),
                 Content.Load<Texture2D>("test_button_s"), Content.Load<BitmapFont>("Font/Calibri48"));
@@ -140,10 +140,6 @@ namespace Demo
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            spriteBatch.Begin(transformMatrix: ResolutionMatrix);
-            Menu1.Draw(spriteBatch, gameTime);
-            spriteBatch.End();
 
             base.Draw(gameTime);
         }

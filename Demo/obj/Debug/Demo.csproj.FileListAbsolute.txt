@@ -74,3 +74,5 @@ C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\obj\Debug\Demo.cspro
 C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\obj\Debug\Demo.csproj.CopyComplete
 C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\obj\Debug\Demo.exe
 C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\obj\Debug\Demo.pdb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Debug\Intuitive GUI for Monogame MGE Items.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Debug\Intuitive GUI for Monogame MGE Items.pdb

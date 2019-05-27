@@ -44,3 +44,41 @@ C:\Users\Admin\source\repos\Intuitive GUI for Monogame\Demo\obj\Release\Demo.csp
 C:\Users\Admin\source\repos\Intuitive GUI for Monogame\Demo\obj\Release\Demo.csproj.CopyComplete
 C:\Users\Admin\source\repos\Intuitive GUI for Monogame\Demo\obj\Release\Demo.exe
 C:\Users\Admin\source\repos\Intuitive GUI for Monogame\Demo\obj\Release\Demo.pdb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\x86\SDL2.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\x64\SDL2.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\x86\soft_oal.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\x64\soft_oal.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\x86\libSDL2-2.0.so.0
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\x64\libSDL2-2.0.so.0
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\x86\libopenal.so.1
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\x64\libopenal.so.1
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\libSDL2-2.0.0.dylib
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\libopenal.1.dylib
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\MonoGame.Framework.dll.config
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Content\Content\Font\Calibri48.xnb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Content\Content\Font\Calibri48_0.xnb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Content\Font\Calibri48.xnb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Content\Font\Calibri48_0.xnb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Content\Content\test_button.xnb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Content\Content\test_image.xnb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Content\Content\test_image_s.xnb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Content\Content\test_menu.xnb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Content\test_button.xnb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Content\test_button_s.xnb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Content\test_menu.xnb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Demo.exe.config
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Demo.exe
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Demo.pdb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Intuitive GUI for Monogame.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\MonoGame.Extended.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\MonoGame.Framework.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Newtonsoft.Json.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Intuitive GUI for Monogame.pdb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\MonoGame.Extended.pdb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\MonoGame.Extended.xml
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Release\Newtonsoft.Json.xml
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\obj\Release\Demo.csprojAssemblyReference.cache
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\obj\Release\Demo.csproj.CoreCompileInputs.cache
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\obj\Release\Demo.csproj.CopyComplete
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\obj\Release\Demo.exe
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\obj\Release\Demo.pdb
