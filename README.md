@@ -6,11 +6,6 @@ This GUI is meant to be intuitive for both the developer and the user. WPF (Wind
 Another reason for the grid-based system is to make controller/keyboard support easy. This will be implemented later. 
 Right now it's very basic, but will allow you to easily make grid-based menus that move, scale, and rotate all of their items as one. I encourage anyone to clone this project and make more useful UI elements that are missing, such as radio buttons, tab windows, listboxes, and so-on. 
 
-# Dependencies
-Monogame-Extended (just the main module)
-This GUI uses Bitmap-Fonts which are extremely better than Sprite-Fonts.
-If you're using this GUI in your project, I encourage you to switch over to using Bitmap-Fonts if you haven't already. That means you will need to get Monogame-Extended and its pipeline extension as well. http://docs.monogameextended.net/Installation/#referencing-the-content-pipeline-extension
-
 # Steps to Getting Started
 1. Download the latest [release](https://github.com/Raflos10/Intuitive-GUI-for-Monogame/releases) and reference it in your project.
 2. Add a Using statement for Intuitive-GUI-for-Monogame in any class you plan to use it. 
@@ -36,6 +31,11 @@ You can also make changes to the grid later and call BuildGrid, but you must spe
 ## More about Grids
 To center something inside a grid, it's easiest right now to have two empty columns/rows set as "fill". This way they fill evenly on either side of the item. 
 Grids can be added to grids, so you can make some fairly complex menus. 
+
+# Dependencies
+Other than Monogame itself, there are no mandatory dependencies. 
+### Optional
+If you want to use Bitmap Fonts in your menus, you will need the optional .dll file which depends on [Monogame.Extended.dll](https://github.com/craftworkgames/MonoGame.Extended)
 
 # Demo
 In the demo you can right click to move the menu around, and use keys Q and E to rotate the menu to see how the UI items stay attached to the menu.
