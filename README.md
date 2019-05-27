@@ -23,10 +23,32 @@ This is only used for getting the right mouse position at any resolution.
 ## Constructing Menus and Grids
 
 All menus can only contain one item. Grids can contain as many items as you like. So define a Grid for your menu. You can give it a margin if you like, which is a definition of the distance between the Grid and the edges of the Menu. 
-Then once you have defined the Grid, you can use AddColumnDefinition and AddRowDefinition. Each of these have three different types of definition. Fixed, Auto, and Fill. (Fill is like Star in WPF). To create a fixed definition, you can just type an integer in the declaration. For Auto and Fill, you have to specify the enum "DefinitionType". 
-After declaring these, it's possible to add children elements to the Grid using "AddChild". You must specify which Column and Row the child element should occupy.
+Then once you have an instance of a Grid, you can use AddColumnDefinition and AddRowDefinition. There are three different types of definition. 
+1. Fixed
+   - A set number of pixels that does not change
+2. Auto
+   - Automatically increases size to fit the largest object in this specific row/column
+3. Fill
+   - Automatically increases size to fill any leftover space that the grid occupies (divided equally by the amount of definitions with this trait (Like Star in WPF)
+
+To create a fixed definition, you can just type an integer in the declaration. 
+```
+grid.AddColumnDefinition(new ColumnDefinition(12));
+```
+For Auto and Fill, you can just specify by referencing them like this
+```
+grid.AddColumnDefinition(ColumnDefinition.Auto);
+grid.AddRowDefinition(RowDefinition.Fill);
+```
+After declaring these, it's possible to add children elements to the Grid using "AddChild". You must specify which Column and Row the child element should occupy. The element must be a subclass of "UIItem". The first integer is the column index (starting with "0) and the second integer is the row index.
+```
+grid.AddChild(new Button(), 0, 1);
+```
 When these steps are completed, you can add the Grid to the Menu.Item. Make sure the Menu has a non-zero Width and a Height first. When adding the Grid to "Item", it is automatically built. 
-You can also make changes to the grid later and call BuildGrid, but you must specify the containment definitions of the grid. For example, if a menu contains the grid, you can specify it's containment column and row as fixed using the menu's width and height. 
+(Optional) You can also make changes to the grid later and call BuildGrid, but you must specify the containment definitions of the grid. 
+```
+grid.BuildGrid(new ColumnDefinition(800), new RowDefinition(600));
+```
 
 ## More about Grids
 To center something inside a grid, it's easiest right now to have two empty columns/rows set as "fill". This way they fill evenly on either side of the item. 
