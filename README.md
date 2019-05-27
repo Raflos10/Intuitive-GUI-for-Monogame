@@ -11,16 +11,29 @@ Monogame-Extended (just the main module)
 This GUI uses Bitmap-Fonts which are extremely better than Sprite-Fonts.
 If you're using this GUI in your project, I encourage you to switch over to using Bitmap-Fonts if you haven't already. That means you will need to get Monogame-Extended and its pipeline extension as well. http://docs.monogameextended.net/Installation/#referencing-the-content-pipeline-extension
 
-# Usage
-Reference the library in your UI classes. Every Menu class you make should derive from "Menu". There is also a static class called "Global" which holds all of your active menus. So to activate a menu, add it to Global.ActiveMenus. 
-"Global" also contains a function for Update, which will update all of your active menus, so make sure to include that in your Update function. 
-All menus can only contain one item. Grids can contain as many items as you like. So define a Grid for your menu. You can give it a margin if you like, which is a definition of the distance between the Grid and the borders of the Menu. 
+# Steps to Getting Started
+1. Download the latest [release](https://github.com/Raflos10/Intuitive-GUI-for-Monogame/releases) and reference it in your project.
+2. Add a Using statement for Intuitive-GUI-for-Monogame in any class you plan to use it. 
+3. In your Game1.cs (or extension of Game), create a new "MenuSystem" and add it to Components. 
+This should look something like:
+```
+MenuSystem menuSystem = new MenuSystem()
+Components.Add(menuSystem);
+```
+4. Make your menu classes extend "Menu"
+5. To activate a menu, add it to MenuSystem.ActiveMenus
+6. (optional) If your game changes resolution at all, make sure to copy your resolution matrix to MenuSystem.ResolutionMatrix
+This is only used for getting the right mouse position at any resolution. 
+
+## Constructing Menus and Grids
+
+All menus can only contain one item. Grids can contain as many items as you like. So define a Grid for your menu. You can give it a margin if you like, which is a definition of the distance between the Grid and the edges of the Menu. 
 Then once you have defined the Grid, you can use AddColumnDefinition and AddRowDefinition. Each of these have three different types of definition. Fixed, Auto, and Fill. (Fill is like Star in WPF). To create a fixed definition, you can just type an integer in the declaration. For Auto and Fill, you have to specify the enum "DefinitionType". 
 After declaring these, it's possible to add children elements to the Grid using "AddChild". You must specify which Column and Row the child element should occupy.
-When these steps are completed, you can add the Grid to the Menu by setting the "Item" property as your grid. Make sure the Menu has a non-zero Width and a Height first. When adding the Grid to "Item", it is automatically built. 
+When these steps are completed, you can add the Grid to the Menu.Item. Make sure the Menu has a non-zero Width and a Height first. When adding the Grid to "Item", it is automatically built. 
 You can also make changes to the grid later and call BuildGrid, but you must specify the containment definitions of the grid. For example, if a menu contains the grid, you can specify it's containment column and row as fixed using the menu's width and height. 
 
-# More about Grids
+## More about Grids
 To center something inside a grid, it's easiest right now to have two empty columns/rows set as "fill". This way they fill evenly on either side of the item. 
 Grids can be added to grids, so you can make some fairly complex menus. 
 
