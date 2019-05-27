@@ -1,0 +1,12 @@
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\bin\Release\Intuitive GUI for Monogame MGE Items.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\bin\Release\Intuitive GUI for Monogame MGE Items.pdb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\bin\Release\Intuitive GUI for Monogame.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\bin\Release\MonoGame.Extended.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\bin\Release\MonoGame.Framework.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\bin\Release\Intuitive GUI for Monogame.pdb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\bin\Release\MonoGame.Framework.dll.config
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\obj\Release\Intuitive GUI for Monogame MGE Items.csprojAssemblyReference.cache
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\obj\Release\Intuitive GUI for Monogame MGE Items.csproj.CoreCompileInputs.cache
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\obj\Release\Intuitive GUI for Monogame MGE Items.csproj.CopyComplete
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\obj\Release\Intuitive GUI for Monogame MGE Items.dll
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame MGE Items\obj\Release\Intuitive GUI for Monogame MGE Items.pdb

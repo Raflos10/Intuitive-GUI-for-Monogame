@@ -445,6 +445,9 @@ namespace Intuitive_GUI_for_Monogame.Items
         public DefinitionTypes DefinitionType { get; set; }
         public int Width { get; set; } = 0;
 
+        public static ColumnDefinition Auto { get; private set; } = new ColumnDefinition(DefinitionTypes.Auto);
+        public static ColumnDefinition Fill { get; private set; } = new ColumnDefinition(DefinitionTypes.Fill);
+
         /// <summary>
         /// Defines a column in a grid.
         /// </summary>
@@ -473,6 +476,9 @@ namespace Intuitive_GUI_for_Monogame.Items
         public enum DefinitionTypes { Fixed, Auto, Fill }
         public DefinitionTypes DefinitionType { get; set; }
         public int Height { get; set; } = 0;
+
+        public static RowDefinition Auto { get; private set; } = new RowDefinition(DefinitionTypes.Auto);
+        public static RowDefinition Fill { get; private set; } = new RowDefinition(DefinitionTypes.Fill);
 
         /// <summary>
         /// Defines a row in a grid.

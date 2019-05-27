@@ -33,23 +33,23 @@ namespace Demo.Demo_Menu
 
             Grid subGrid = new Grid();
 
-            subGrid.AddColumnDefinition(new ColumnDefinition(ColumnDefinition.DefinitionTypes.Auto));
-            subGrid.AddColumnDefinition(new ColumnDefinition(ColumnDefinition.DefinitionTypes.Auto));
-            subGrid.AddRowDefinition(new RowDefinition(RowDefinition.DefinitionTypes.Auto));
-            subGrid.AddRowDefinition(new RowDefinition(RowDefinition.DefinitionTypes.Auto));
+            subGrid.AddColumnDefinition(ColumnDefinition.Auto);
+            subGrid.AddColumnDefinition(ColumnDefinition.Auto);
+            subGrid.AddRowDefinition(RowDefinition.Auto);
+            subGrid.AddRowDefinition(RowDefinition.Auto);
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("Subgrid 0")), 0, 0);
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("Subgrid 1")), 1, 0);
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("Subgrid 2")), 0, 1);
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("Subgrid 3")), 1, 1);
 
-            mainGrid.AddColumnDefinition(new ColumnDefinition(ColumnDefinition.DefinitionTypes.Auto));
-            mainGrid.AddColumnDefinition(new ColumnDefinition(ColumnDefinition.DefinitionTypes.Auto));
-            mainGrid.AddColumnDefinition(new ColumnDefinition(ColumnDefinition.DefinitionTypes.Auto));
-            mainGrid.AddColumnDefinition(new ColumnDefinition(ColumnDefinition.DefinitionTypes.Auto));
-            mainGrid.AddColumnDefinition(new ColumnDefinition(ColumnDefinition.DefinitionTypes.Fill));
-            mainGrid.AddRowDefinition(new RowDefinition(RowDefinition.DefinitionTypes.Auto));
-            mainGrid.AddRowDefinition(new RowDefinition(RowDefinition.DefinitionTypes.Auto));
-            mainGrid.AddRowDefinition(new RowDefinition(RowDefinition.DefinitionTypes.Fill));
+            mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
+            mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
+            mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
+            mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
+            mainGrid.AddColumnDefinition(ColumnDefinition.Fill);
+            mainGrid.AddRowDefinition(RowDefinition.Auto);
+            mainGrid.AddRowDefinition(RowDefinition.Auto);
+            mainGrid.AddRowDefinition(RowDefinition.Fill);
             mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 0")), 0, 0);
             mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 1")), 1, 0);
             mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 2")), 2, 0);
