@@ -64,7 +64,7 @@ namespace Intuitive_GUI_for_Monogame
             base.Draw(gameTime);
 
             spriteBatch.Begin(transformMatrix: ResolutionMatrix);
-            foreach (Menu menu in ActiveMenus)
+            foreach (Menu menu in activeMenus)
                 menu.Draw(spriteBatch, gameTime);
             spriteBatch.End();
         }
