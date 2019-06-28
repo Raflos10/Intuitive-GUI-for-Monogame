@@ -27,9 +27,8 @@ namespace Demo.Demo_Menu
             this.Width = texture.Width;
             this.Height = texture.Height;
             Origin = new Vector2(Width * .5f, Height * .5f);
-            State = States.Active;
 
-            Grid mainGrid = new Grid(new Margin(200, 100));
+            Grid mainGrid = new Grid();
 
             Grid subGrid = new Grid();
 
@@ -42,24 +41,29 @@ namespace Demo.Demo_Menu
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("Subgrid 2")), 0, 1);
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("Subgrid 3")), 1, 1);
 
+            mainGrid.AddColumnDefinition(ColumnDefinition.Fill);
             mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
             mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
             mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
             mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
             mainGrid.AddColumnDefinition(ColumnDefinition.Fill);
+            mainGrid.AddRowDefinition(RowDefinition.Fill);
             mainGrid.AddRowDefinition(RowDefinition.Auto);
             mainGrid.AddRowDefinition(RowDefinition.Auto);
             mainGrid.AddRowDefinition(RowDefinition.Fill);
-            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 0")), 0, 0);
-            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 1")), 1, 0);
-            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 2")), 2, 0);
-            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 3")), 3, 0);
-            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 4")), 0, 1);
-            mainGrid.AddChild(subGrid, 1, 1);
-            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 5")), 2, 1);
-            mainGrid.AddChild(new Menu1TextButton(bitmapFont, "Button", OnButtonPress, new ButtonArgs("Grid 6")), 3, 1);
+            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 0")), 1, 1);
+            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 1")), 2, 1);
+            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 2")), 3, 1);
+            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 3")), 4, 1);
+            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 4")), 1, 2);
+            mainGrid.AddChild(subGrid, 2, 2);
+            mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("Grid 5")), 3, 2);
+            mainGrid.AddChild(new Menu1TextButton(bitmapFont, "Button", OnButtonPress, new ButtonArgs("Grid 6")), 4, 2);
 
             Item = mainGrid;
+
+            Debug.WriteLine(mainGrid.ColumnDefinitions.ElementAt(0).Width);
+            Debug.WriteLine(mainGrid.RowDefinitions.ElementAt(0).Height);
         }
 
         void OnButtonPress(object sender, EventArgs args)

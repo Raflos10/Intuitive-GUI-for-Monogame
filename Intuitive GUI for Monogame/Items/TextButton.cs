@@ -15,6 +15,7 @@ namespace Intuitive_GUI_for_Monogame.Items
     {
         private SpriteFont font;
         private string text;
+        public float LayerDepth { get; set; } = 0;
 
         public Color fontColor;
 
@@ -49,7 +50,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.DrawString(font, text, Position, colors[State], Rotation, Vector2.Zero, Scale, SpriteEffects.None, 0f);
+            spriteBatch.DrawString(font, text, Position, colors[State], Rotation, Vector2.Zero, Scale, SpriteEffects.None, LayerDepth);
         }
     }
 }

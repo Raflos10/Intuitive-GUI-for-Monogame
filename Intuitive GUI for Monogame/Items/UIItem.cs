@@ -13,7 +13,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 {
     public abstract class UIItem
     {
-        protected Vector2 Position { get; private set; }
+        public Vector2 Position { get; private set; }
         public int Width { get; protected set; }
         public int Height { get; protected set; }
         protected Vector2 Scale { get; private set; }

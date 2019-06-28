@@ -104,7 +104,9 @@ namespace Intuitive_GUI_for_Monogame
 
         public enum MenuInputs { Up, Down, Left, Right, OK, Cancel, Pause }
         public enum States { Invisible, Active, VisibleInactive }
-        public States State { get; set; } = States.Invisible;
+        public States State { get; set; } = States.Active;
+
+        private bool usingMouse = true;
 
         public Menu()
         {
@@ -132,8 +134,13 @@ namespace Intuitive_GUI_for_Monogame
             {
                 if (Item is Items.Selectable selectable)
                 {
+                    if(usingMouse)
+                    {
+                        selectable.Selected = true;
+                        usingMouse = false;
+                        return;
+                    }
                     selectable.InputTrigger(input);
-                    return;
                 }
             }
         }
@@ -157,7 +164,14 @@ namespace Intuitive_GUI_for_Monogame
         {
             if (State == States.Active)
                 if (Item is Items.Selectable selectable)
+                {
+                    if (!usingMouse)
+                    {
+                        selectable.Selected = false;
+                        usingMouse = true;
+                    }
                     selectable.MouseUpdate(mouseState, mouseStateLast, mousePosition);
+                }
         }
 
         void UpdateTransform()

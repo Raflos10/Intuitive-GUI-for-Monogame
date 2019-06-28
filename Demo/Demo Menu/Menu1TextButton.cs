@@ -16,7 +16,7 @@ using Intuitive_GUI_for_Monogame_MGE_Items;
 
 namespace Demo.Demo_Menu
 {
-    public class Menu1TextButton : Intuitive_GUI_for_Monogame_MGE_Items.BMTextButton
+    public class Menu1TextButton : BMTextButton
     {
         public Menu1TextButton(BitmapFont font, string text, EventHandler e, EventArgs args, Margin margin = null) : base(font, text, margin)
         {

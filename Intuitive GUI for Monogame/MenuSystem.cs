@@ -14,9 +14,9 @@ namespace Intuitive_GUI_for_Monogame
 {
     public class MenuSystem : DrawableGameComponent
     {
-        public List<Menu> ActiveMenus { get; private set; } = new List<Menu>();
         public Matrix ResolutionMatrix { get; set; } = Matrix.Identity;
         private SpriteBatch spriteBatch;
+        private List<Menu> activeMenus = new List<Menu>();
 
         private MouseState mouseState, mouseStateLast;
 
@@ -31,23 +31,27 @@ namespace Intuitive_GUI_for_Monogame
             mouseState = Mouse.GetState();
 
             if (mouseStateLast != mouseState)
-                foreach (Menu menu in ActiveMenus)
+                foreach (Menu menu in activeMenus)
                     menu.MouseUpdate(mouseState, mouseStateLast, GetVirtualPosition(mouseState.Position.ToVector2()));
         }
 
         public void InputTrigger(Menu.MenuInputs input)
         {
-            foreach (Menu menu in ActiveMenus)
-            {
+            foreach (Menu menu in activeMenus)
                 if (menu.State == Menu.States.Active)
-                {
-                    if (menu.Item is Items.Selectable selectable)
-                    {
-                        selectable.InputTrigger(input);
-                        return;
-                    }
-                }
-            }
+                    menu.InputTrigger(input);
+        }
+
+        public void AddMenu(Menu menu)
+        {
+            menu.State = Menu.States.Active;
+            activeMenus.Add(menu);
+        }
+
+        public void RemoveMenu(Menu menu)
+        {
+            menu.State = Menu.States.Invisible;
+            activeMenus.Remove(menu);
         }
 
         Vector2 GetVirtualPosition(Vector2 position)

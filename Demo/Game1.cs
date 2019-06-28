@@ -85,7 +85,7 @@ namespace Demo
 
             Menu1 = new Demo_Menu.Menu1(Content.Load<Texture2D>("test_menu"), Content.Load<Texture2D>("test_button"),
                 Content.Load<Texture2D>("test_button_s"), Content.Load<BitmapFont>("Font/Calibri48"));
-            menuSystem.ActiveMenus.Add(Menu1);
+            menuSystem.AddMenu(Menu1);
             Menu1.Position = new Vector2(VirtualWidth * .5f, VirtualHeight * .5f);
             //Menu1.Position = new Vector2((VirtualWidth - Menu1.Width) * .5f, 100);
             //font = Content.Load<BitmapFont>("Fonts/Calibri48");
@@ -123,6 +123,18 @@ namespace Demo
 
             if (Input.IsKeyPressed(Keys.E))
                 Menu1.Rotation += .03f;
+
+            if (Input.IsKeyTriggered(Keys.Left))
+                menuSystem.InputTrigger(Menu.MenuInputs.Left);
+
+            if (Input.IsKeyTriggered(Keys.Right))
+                menuSystem.InputTrigger(Menu.MenuInputs.Right);
+
+            if (Input.IsKeyTriggered(Keys.Up))
+                menuSystem.InputTrigger(Menu.MenuInputs.Up);
+
+            if (Input.IsKeyTriggered(Keys.Down))
+                menuSystem.InputTrigger(Menu.MenuInputs.Down);
 
             base.Update(gameTime);
         }

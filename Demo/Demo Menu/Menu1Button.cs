@@ -19,6 +19,9 @@ namespace Demo.Demo_Menu
             OnMouseEnter += M_Enter;
             OnMouseExit += M_Exit;
 
+            OnSelect += M_Enter;
+            OnDeselect += M_Exit;
+
             OnMousePress += e;
             this.Args = args;
 
