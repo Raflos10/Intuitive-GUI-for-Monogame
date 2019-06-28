@@ -14,28 +14,30 @@ namespace Demo.Demo_Menu
 {
     public class Menu1Button : ImageButton
     {
+        Dictionary<ButtonState, Color> statesColors;
+
         public Menu1Button(Texture2D texture, EventHandler e, EventArgs args, Margin margin = null) : base(texture, margin)
         {
-            OnMouseEnter += M_Enter;
-            OnMouseExit += M_Exit;
-
-            OnSelect += M_Enter;
-            OnDeselect += M_Exit;
-
-            OnMousePress += e;
+            OnPress += e;
             this.Args = args;
+
+            OnStateChange += State_Change;
+
+            statesColors = new Dictionary<ButtonState, Color>
+            {
+                { ButtonState.None,Color.White },
+                { ButtonState.Highlighted,new Color( 1f,1f,1f,.5f) },
+                { ButtonState.Pressed,new Color(0.8f,0.8f,0.8f,1f )},
+                { ButtonState.Released,new Color(1f,1f,1f,.5f )}
+            };
 
             this.Margin = margin ?? Margin.Zero;
         }
 
-        void M_Enter(object sender, EventArgs e)
+        void State_Change(object sender, EventArgs e)
         {
-            Color = new Color(1f, 1f, 1f, .5f);
-        }
-
-        void M_Exit(object sender, EventArgs e)
-        {
-            Color = Color.White;
+            if (e is ButtonStateChangedEventArgs args)
+                Color = statesColors[args.NewState];
         }
     }
 }

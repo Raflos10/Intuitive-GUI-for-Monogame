@@ -13,26 +13,23 @@ namespace Intuitive_GUI_for_Monogame.Items
 {
     public class ImageButton : Button
     {
+        public Texture2D Texture { get; set; }
+        public Rectangle? SourceRectangle { get; set; } = null;
         public Color Color { get; set; } = Color.White;
 
-        private Dictionary<States, Texture2D> textures;
-
-        public ImageButton(Texture2D texture, Margin margin = null)
+        public ImageButton(Texture2D texture, Margin margin = null, Rectangle? sourceRectangle = null)
         {
-            textures = new Dictionary<States, Texture2D>
-                {
-                    { States.None, texture }
-                };
+            this.Texture = texture;
+            this.Margin = margin ?? Margin.Zero;
+            this.SourceRectangle = sourceRectangle ?? null;
 
             Width = texture.Width;
             Height = texture.Height;
-            this.Margin = margin ?? Margin.Zero;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            //TODO texture states
-            spriteBatch.Draw(textures[States.None], Position, null, Color, Rotation, Vector2.Zero, Scale, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(Texture, Position, SourceRectangle, Color, Rotation, Origin, Scale, SpriteEffect, LayerDepth);
         }
     }
 }

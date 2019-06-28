@@ -13,37 +13,68 @@ namespace Intuitive_GUI_for_Monogame.Items
 {
     public abstract class Button : Selectable
     {
-        public enum States
+        public float LayerDepth { get; set; } = 0;
+        public SpriteEffects SpriteEffect { get; set; } = SpriteEffects.None;
+
+        public enum ButtonState
         {
             None,
+            Highlighted,
             Pressed,
-            Hover,
-            Released,
-            Selected
+            Released
         }
 
-        public States State { get; set; } = States.None;
-        public bool WaitUntilRelease { get; protected set; } = false;
+        private ButtonState state = ButtonState.None;
+        public ButtonState State
+        {
+            get { return state; }
+            set
+            {
+                OnStateChange?.Invoke(this, new ButtonStateChangedEventArgs(state,value));
+                state = value;
+            }
+        }
+
+        public EventHandler OnStateChange;
 
         public Button()
         {
-            OnSelect += Button_OnSelect;
-            OnDeselect += Button_OnDeselect;
+            OnHighlight += Button_OnHighlight;
+            OnUnhighlight += Button_OnUnhighlight;
+            OnPress += Button_OnPress;
+            OnRelease += Button_OnRelease;
         }
 
-        private void Button_OnSelect(object sender, EventArgs e)
+        private void Button_OnHighlight(object sender, EventArgs e)
         {
-            State = States.Selected;
+            State = ButtonState.Highlighted;
         }
 
-        private void Button_OnDeselect(object sender, EventArgs e)
+        private void Button_OnUnhighlight(object sender, EventArgs e)
         {
-            State = States.None;
+            State = ButtonState.None;
         }
 
-        public virtual void ChangeState(States state)
+        private void Button_OnPress(object sender, EventArgs e)
         {
-            this.State = state;
+            State = ButtonState.Pressed;
+        }
+
+        private void Button_OnRelease(object sender, EventArgs e)
+        {
+            State = ButtonState.Released;
+        }
+    }
+
+    public class ButtonStateChangedEventArgs : EventArgs
+    {
+        public Button.ButtonState OldState { get; private set; }
+        public Button.ButtonState NewState { get; private set; }
+
+        public ButtonStateChangedEventArgs(Button.ButtonState oldState, Button.ButtonState newState)
+        {
+            this.OldState = oldState;
+            this.NewState = newState;
         }
     }
 }

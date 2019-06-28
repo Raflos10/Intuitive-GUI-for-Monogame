@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Intuitive_GUI_for_Monogame.Items
 {
-    public abstract class UIItem
+    public abstract class UIElement
     {
         public Vector2 Position { get; private set; }
         public int Width { get; protected set; }

@@ -12,67 +12,62 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Intuitive_GUI_for_Monogame.Items
 {
-    public abstract class Selectable : UIItem
+    public abstract class Selectable : UIElement
     {
-        public bool IsSelectable { get; protected set; }
+        //public bool IsSelectable { get; protected set; }
 
-        private bool containsMouse;
-        public bool ContainsMouse
-        {
-            get { return containsMouse; }
-            set
-            {
-                if (value)
-                    OnMouseEnter?.Invoke(this, EventArgs.Empty);
-                else
-                    OnMouseExit?.Invoke(this, EventArgs.Empty);
-                containsMouse = value;
-            }
-        }
+        public bool ContainsMouse { get; private set; }
 
-        private bool selected;
-        public bool Selected
-        {
-            get { return selected; }
-            set
-            {
-                if (value)
-                    OnSelect?.Invoke(this, EventArgs.Empty);
-                else
-                    OnDeselect?.Invoke(this, EventArgs.Empty);
-                selected = value;
-            }
-        }
+        public bool Selected { get; private set; }
 
-        public EventHandler OnSelect, OnDeselect, OnMouseEnter, OnMouseExit, OnMousePress, OnMouseRelease, OnOK;
+        public EventHandler OnHighlight, OnUnhighlight, OnPress, OnRelease;
 
         public EventArgs Args;
 
+        public void Select()
+        {
+            OnHighlight?.Invoke(this, EventArgs.Empty);
+            Selected = true;
+        }
+
+        public void Unselect()
+        {
+            OnUnhighlight?.Invoke(this, EventArgs.Empty);
+            Selected = false;
+        }
+
+        // move to menu and grid?
         public virtual void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 virtualPosition)
         {
             Vector2 mousePosition = Vector2.Transform(virtualPosition, Matrix.Invert(ParentMatrix));
             if (mousePosition.X > 0 && mousePosition.Y > 0 && mousePosition.X < Width && mousePosition.Y < Height)
             {
                 if (!ContainsMouse)
+                {
+                    OnHighlight?.Invoke(this, EventArgs.Empty);
                     ContainsMouse = true;
+                }
 
                 if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
-                    OnMousePress?.Invoke(this, Args);
+                    OnPress?.Invoke(this, Args);
 
                 if (mouseStateLast.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
-                    OnMouseRelease?.Invoke(this, Args);
+                    OnRelease?.Invoke(this, Args);
             }
             else
             {
                 if (ContainsMouse)
+                {
+                    OnUnhighlight?.Invoke(this, EventArgs.Empty);
                     ContainsMouse = false;
+                }
             }
         }
 
         public virtual void InputTrigger(Menu.MenuInputs input)
         {
             if (input == Menu.MenuInputs.OK)
-                OnOK?.Invoke(this, Args);
+                OnPress?.Invoke(this, Args);
         }
     }
 }

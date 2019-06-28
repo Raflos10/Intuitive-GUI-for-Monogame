@@ -13,44 +13,24 @@ namespace Intuitive_GUI_for_Monogame.Items
 {
     public class TextButton : Button
     {
-        private SpriteFont font;
-        private string text;
-        public float LayerDepth { get; set; } = 0;
-
-        public Color fontColor;
-
-        private Dictionary<States, Color> colors;
+        public SpriteFont Font { get; set; }
+        public string Text { get; set; }
+        public Color Color { get; set; } = Color.Black;
 
         public TextButton(SpriteFont font, string text, Margin margin = null)
         {
-            this.font = font;
-            this.text = text;
+            this.Font = font;
+            this.Text = text;
 
             this.Margin = margin ?? Margin.Zero;
-
-            colors = new Dictionary<States, Color>
-                {
-                    { States.None, Color.Black },
-                    { States.Hover, Color.White },
-                    { States.Pressed, Color.Gray },
-                    { States.Released, Color.LightGray },
-                    { States.Selected, Color.White }
-                };
-            ChangeState(States.None);
 
             Width = (int)font.MeasureString(text).X;
             Height = (int)font.MeasureString(text).Y;
         }
 
-        public override void ChangeState(States state)
-        {
-            fontColor = colors[state];
-            base.ChangeState(state);
-        }
-
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.DrawString(font, text, Position, colors[State], Rotation, Vector2.Zero, Scale, SpriteEffects.None, LayerDepth);
+            spriteBatch.DrawString(Font, Text, Position, Color, Rotation, Origin, Scale, SpriteEffect, LayerDepth);
         }
     }
 }

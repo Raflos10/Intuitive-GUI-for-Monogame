@@ -18,25 +18,30 @@ namespace Demo.Demo_Menu
 {
     public class Menu1TextButton : BMTextButton
     {
+        Dictionary<ButtonState, Color> statesColors;
+
         public Menu1TextButton(BitmapFont font, string text, EventHandler e, EventArgs args, Margin margin = null) : base(font, text, margin)
         {
-            OnMouseEnter += M_Enter;
-            OnMouseExit += M_Exit;
-
-            OnMousePress += e;
+            OnPress += e;
             this.Args = args;
+
+            statesColors = new Dictionary<ButtonState, Color>
+            {
+                { ButtonState.None,Color.Black },
+                { ButtonState.Highlighted,Color.White },
+                { ButtonState.Pressed,Color.Wheat },
+                { ButtonState.Released,Color.White }
+            };
+
+            OnStateChange += State_Change;
 
             this.Margin = margin ?? Margin.Zero;
         }
 
-        void M_Enter(object sender, EventArgs e)
+        void State_Change(object sender, EventArgs e)
         {
-            State = States.Hover;
-        }
-
-        void M_Exit(object sender, EventArgs e)
-        {
-            State = States.None;
+            if (e is ButtonStateChangedEventArgs args)
+                Color = statesColors[args.NewState];
         }
     }
 }

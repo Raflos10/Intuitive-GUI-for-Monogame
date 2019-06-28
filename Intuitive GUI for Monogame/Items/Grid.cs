@@ -101,7 +101,7 @@ namespace Intuitive_GUI_for_Monogame.Items
             _rowDefinitions.Add(rowDefinition);
         }
 
-        public void AddChild(UIItem uiItem, int column, int row)
+        public void AddChild(UIElement uiItem, int column, int row)
         {
             if (column >= ColumnDefinitions.Count)
                 throw new Exception("Column index out of bounds.");
@@ -147,8 +147,8 @@ namespace Intuitive_GUI_for_Monogame.Items
             {
                 // the first added selectable child is the default selected
                 primarySelection = new Point(column, row);
-                OnSelect += SelectThis;
-                OnDeselect += DeselectThis;
+                OnHighlight += HighlightThis;
+                OnUnhighlight += UnhighlightThis;
                 SelectableGrid = true;
             }
         }
@@ -274,113 +274,9 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
 
             #endregion
-
-            #region I don't remember what this is but I don't think it's needed anymore
-
-            ////get the global points for each edge of the column/row
-            //int[] BuildEdges(int[] definitions, bool column)
-            //{
-            //    //this array holds the size of each area in the column/row
-            //    int[] sizes = new int[definitions.Length];
-
-            //    //this is just to figure out how much of the grid is left for the auto size areas
-            //    int currentSize = 0;
-            //    //list of the indexes of the auto size areas
-            //    List<int> autoSizes = new List<int>();
-            //    //get all the specific sizes, and get the indexes for auto size areas
-            //    for (int i = 0; i < definitions.Length; i++)
-            //    {
-            //        if (definitions[i] > 0)
-            //        {
-            //            sizes[i] = definitions[i];
-            //            currentSize += definitions[i];
-            //        }
-            //        else
-            //            autoSizes.Add(i);
-            //    }
-
-            //    //only necessary if we have auto size areas
-            //    if (autoSizes.Count > 0)
-            //    {
-            //        //total size of this grid in our current dimension
-            //        int gridSize = column ? Width : Height;
-
-            //        //the size of all autosize areas (all equal sizes determined by overall grid size)
-            //        int autoSize = (gridSize - currentSize) / autoSizes.Count;
-
-            //        //fill in the missing sizes with the auto size
-            //        for (int i = 0; i < autoSizes.Count; i++)
-            //            sizes[autoSizes[i]] = autoSize;
-            //    }
-
-            //    //result array
-            //    int[] res = new int[definitions.Length + 1];
-            //    //using this int again for another loop
-            //    currentSize = 0;
-            //    //the grid's location
-            //    int location = column ? (int)Position.X : (int)Position.Y;
-            //    //convert the sizes to global points
-            //    for (int i = 0; i < res.Length; i++)
-            //    {
-            //        res[i] = location + currentSize;
-            //        if (i < sizes.Length)
-            //            currentSize += sizes[i];
-            //    }
-
-            //    return res;
-            //}
-
-            //bool hasSelection = false;
-            //int lowestColumn = 0, lowestRow = 0;
-            //for (int i = 0; i < GridEntries.Count; i++)
-            //{
-            //    //if (GridEntries[i].UIItem.GetType() == typeof(Grid))
-            //    //{
-            //    //    Grid subGrid = (Grid)GridEntries[i].UIItem;
-            //    //    int x = columnEdges[GridEntries[i].Column];
-            //    //    int y = rowEdges[GridEntries[i].Row];
-            //    //    subGrid.Rectangle = new Rectangle(x, y, columnEdges[GridEntries[i].Column + 1] - x, rowEdges[GridEntries[i].Row + 1] - y);
-            //    //    subGrid.BuildGrid();
-            //    //}
-            //    //else
-            //    //{
-            //    //    Rectangle originalRect = GridEntries[i].UIItem.Rectangle;
-            //    //    GridEntries[i].UIItem.Rectangle = new Rectangle(columnEdges[GridEntries[i].Column], rowEdges[GridEntries[i].Row],
-            //    //        originalRect.Width, originalRect.Height);
-            //    //}
-
-            //    if (GridEntries[i].UIItem.GetType().IsSubclassOf(typeof(Selectable)))
-            //    {
-            //        Selectable selItem = (Selectable)GridEntries[i].UIItem;
-
-            //        if (hasSelection)
-            //        {
-            //            if (GridEntries[i].Column < lowestColumn)
-            //                lowestColumn = GridEntries[i].Column;
-            //            if (GridEntries[i].Row < lowestRow)
-            //                lowestRow = GridEntries[i].Row;
-            //        }
-            //        else
-            //        {
-            //            lowestColumn = GridEntries[i].Column;
-            //            lowestRow = GridEntries[i].Row;
-            //            OnSelect += Grid_OnSelect;
-            //            hasSelection = true;
-            //        }
-            //    }
-            //}
-            //if (hasSelection)
-            //{
-            //    PrimarySelection = new Tuple<int, int>(lowestColumn, lowestRow);
-            //    Selection = PrimarySelection;
-            //    OnDeselect += Grid_OnDeselect;
-            //}
-
-            #endregion
-
         }
 
-        void SelectThis(object sender, EventArgs e)
+        void HighlightThis(object sender, EventArgs e)
         {
             if (selectableColumnsLocations.Count == 0 && selectableRowsLocations.Count == 0)
                 return;
@@ -390,14 +286,14 @@ namespace Intuitive_GUI_for_Monogame.Items
                 ChangeSelection(primarySelection.X, primarySelection.Y);
         }
 
-        void DeselectThis(object sender, EventArgs e)
+        void UnhighlightThis(object sender, EventArgs e)
         {
             if (selectableColumnsLocations.Count == 0 && selectableRowsLocations.Count == 0)
                 return;
 
             foreach (GridEntry gridEntry in GridEntries)
                 if (gridEntry.UIItem is Selectable selectable)
-                    selectable.Selected = false;
+                    selectable.Unselect();
         }
 
         public override void InputTrigger(Menu.MenuInputs input)
@@ -424,8 +320,7 @@ namespace Intuitive_GUI_for_Monogame.Items
                     HandleSelectionChange(1, 0);
                     break;
                 case Menu.MenuInputs.OK:
-
-                    //selectedItem.InputTrigger(input);
+                    SelectedItem.InputTrigger(input);
                     break;
             }
         }
@@ -438,12 +333,12 @@ namespace Intuitive_GUI_for_Monogame.Items
             if (gridEntryIndexByLocation.ContainsKey(location))
             {
                 if (SelectedItem != null)
-                    SelectedItem.Selected = false;
+                    SelectedItem.Unselect();
                 if (GridEntries.ElementAt(gridEntryIndexByLocation[location]).UIItem is Selectable selectable)
                     SelectedItem = selectable;
                 else
                     throw exception;
-                SelectedItem.Selected = true;
+                SelectedItem.Select();
                 selection = location;
             }
             else
@@ -550,11 +445,11 @@ namespace Intuitive_GUI_for_Monogame.Items
 
     public class GridEntry
     {
-        public UIItem UIItem { get; private set; }
+        public UIElement UIItem { get; private set; }
         public int Column { get; private set; }
         public int Row { get; private set; }
 
-        public GridEntry(UIItem uiItem, int column, int row)
+        public GridEntry(UIElement uiItem, int column, int row)
         {
             this.UIItem = uiItem;
             this.Column = column;

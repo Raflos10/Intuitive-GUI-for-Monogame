@@ -16,43 +16,24 @@ namespace Intuitive_GUI_for_Monogame_MGE_Items
 {
     public class BMTextButton : Button
     {
-        private BitmapFont font;
-        private string text;
-
-        public Color fontColor;
-
-        private Dictionary<States, Color> colors;
+        public BitmapFont Font { get; set; }
+        public string Text { get; set; }
+        public Color Color { get; set; } = Color.Black;
 
         public BMTextButton(BitmapFont font, string text, Margin margin = null)
         {
-            this.font = font;
-            this.text = text;
+            this.Font = font;
+            this.Text = text;
 
             this.Margin = margin ?? Margin.Zero;
-
-            colors = new Dictionary<States, Color>
-                {
-                    { States.None, Color.Black },
-                    { States.Hover, Color.White },
-                    { States.Pressed, Color.Gray },
-                    { States.Released, Color.LightGray },
-                    { States.Selected, Color.White }
-                };
-            ChangeState(States.None);
 
             Width = (int)font.MeasureString(text).Width;
             Height = (int)font.MeasureString(text).Height;
         }
 
-        public override void ChangeState(States state)
-        {
-            fontColor = colors[state];
-            base.ChangeState(state);
-        }
-
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.DrawString(font, text, Position, colors[State], Rotation, Vector2.Zero, Scale, SpriteEffects.None, 0f);
+            spriteBatch.DrawString(Font, Text, Position, Color, Rotation, Origin, Scale, SpriteEffect, 0f);
         }
     }
 }

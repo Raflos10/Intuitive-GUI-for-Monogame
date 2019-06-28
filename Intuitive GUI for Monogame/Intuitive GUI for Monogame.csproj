@@ -55,7 +55,7 @@
     <Compile Include="Items\Margin.cs" />
     <Compile Include="Items\Selectable.cs" />
     <Compile Include="Items\TextButton.cs" />
-    <Compile Include="Items\UIItem.cs" />
+    <Compile Include="Items\UIElement.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

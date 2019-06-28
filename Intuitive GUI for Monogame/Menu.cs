@@ -82,8 +82,8 @@ namespace Intuitive_GUI_for_Monogame
             }
         }
 
-        private Items.UIItem item;
-        public Items.UIItem Item
+        private Items.UIElement item;
+        public Items.UIElement Item
         {
             get { return item; }
             set
@@ -96,15 +96,13 @@ namespace Intuitive_GUI_for_Monogame
         }
 
         #endregion
-
-        public Color Color { get; set; } = Color.White;
+        
         public Matrix Transform { get; private set; }
 
         public EventHandler Open, Close;
 
         public enum MenuInputs { Up, Down, Left, Right, OK, Cancel, Pause }
-        public enum States { Invisible, Active, VisibleInactive }
-        public States State { get; set; } = States.Active;
+        public bool Active { get; set; } = true;
 
         private bool usingMouse = true;
 
@@ -124,50 +122,32 @@ namespace Intuitive_GUI_for_Monogame
             if (Item != null && Item is Items.Selectable selectable)
             {
                 //TODO make sure internal grids are deselected too
-                selectable.Selected = false;
+                selectable.Unselect();
             }
         }
 
         public virtual void InputTrigger(MenuInputs input)
         {
-            if (State == States.Active)
+            if (Item is Items.Selectable selectable)
             {
-                if (Item is Items.Selectable selectable)
+                if (usingMouse)
                 {
-                    if(usingMouse)
-                    {
-                        selectable.Selected = true;
-                        usingMouse = false;
-                        return;
-                    }
-                    selectable.InputTrigger(input);
+                    selectable.Select();
+                    usingMouse = false;
+                    return;
                 }
+                selectable.InputTrigger(input);
             }
-        }
-
-        public void ChangeStateInvisible(object sender, EventArgs e)
-        {
-            State = States.Invisible;
-        }
-
-        public void ChangeStateActive(object sender, EventArgs e)
-        {
-            State = States.Active;
-        }
-
-        public void ChangeStateVisibleInactive(object sender, EventArgs e)
-        {
-            State = States.VisibleInactive;
         }
 
         public void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 mousePosition)
         {
-            if (State == States.Active)
+            if (Active)
                 if (Item is Items.Selectable selectable)
                 {
                     if (!usingMouse)
                     {
-                        selectable.Selected = false;
+                        selectable.Unselect();
                         usingMouse = true;
                     }
                     selectable.MouseUpdate(mouseState, mouseStateLast, mousePosition);
@@ -186,8 +166,7 @@ namespace Intuitive_GUI_for_Monogame
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (State != States.Invisible)
-                Item?.Draw(spriteBatch, gameTime);
+            Item?.Draw(spriteBatch, gameTime);
         }
     }
 }

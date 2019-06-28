@@ -61,9 +61,6 @@ namespace Demo.Demo_Menu
             mainGrid.AddChild(new Menu1TextButton(bitmapFont, "Button", OnButtonPress, new ButtonArgs("Grid 6")), 4, 2);
 
             Item = mainGrid;
-
-            Debug.WriteLine(mainGrid.ColumnDefinitions.ElementAt(0).Width);
-            Debug.WriteLine(mainGrid.RowDefinitions.ElementAt(0).Height);
         }
 
         void OnButtonPress(object sender, EventArgs args)
@@ -74,8 +71,7 @@ namespace Demo.Demo_Menu
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (State != States.Invisible)
-                spriteBatch.Draw(Background, Position, null, Color, Rotation, Origin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Background, Position, null, Color.White, Rotation, Origin, 1f, SpriteEffects.None, 0f);
 
             base.Draw(spriteBatch, gameTime);
         }

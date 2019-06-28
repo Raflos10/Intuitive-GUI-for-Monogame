@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Intuitive_GUI_for_Monogame.Items
 {
-    public class Image : UIItem
+    public class Image : UIElement
     {
         public Texture2D Texture { get; set; }
         public Color Color { get; set; }

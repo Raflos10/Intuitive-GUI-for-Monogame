@@ -85,7 +85,7 @@ namespace Demo
 
             Menu1 = new Demo_Menu.Menu1(Content.Load<Texture2D>("test_menu"), Content.Load<Texture2D>("test_button"),
                 Content.Load<Texture2D>("test_button_s"), Content.Load<BitmapFont>("Font/Calibri48"));
-            menuSystem.AddMenu(Menu1);
+            menuSystem.OpenMenu(Menu1);
             Menu1.Position = new Vector2(VirtualWidth * .5f, VirtualHeight * .5f);
             //Menu1.Position = new Vector2((VirtualWidth - Menu1.Width) * .5f, 100);
             //font = Content.Load<BitmapFont>("Fonts/Calibri48");
@@ -135,6 +135,9 @@ namespace Demo
 
             if (Input.IsKeyTriggered(Keys.Down))
                 menuSystem.InputTrigger(Menu.MenuInputs.Down);
+
+            if (Input.IsKeyTriggered(Keys.X))
+                menuSystem.InputTrigger(Menu.MenuInputs.OK);
 
             base.Update(gameTime);
         }

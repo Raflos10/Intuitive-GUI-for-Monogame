@@ -10,40 +10,35 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Intuitive_GUI_for_Monogame.Items
 {
-    public class Label : UIItem
+    public class Label : UIElement
     {
-        private SpriteFont font;
-        string text;
-
-        public Vector2 Size { get; set; }
-        public Color Color { get; set; }
+        public SpriteFont Font { get; set; }
+        public string Text { get; set; }
+        public Color Color { get; set; } = Color.Black;
+        public SpriteEffects SpriteEffect { get; set; } = SpriteEffects.None;
+        public float LayerDepth { get; set; }
 
         public Label(SpriteFont font, string text, Margin margin = null)
         {
-            NewLabel(font, text, Color.Black, Margin.Zero);
+            NewLabel(font, text, Color.Black, margin);
         }
 
         public Label(SpriteFont font, string text, Color color, Margin margin = null)
         {
-            NewLabel(font, text, color, Margin.Zero);
+            NewLabel(font, text, color, margin);
         }
 
         private void NewLabel(SpriteFont font, string text, Color color, Margin margin)
         {
-            this.font = font;
-            this.text = text;
+            this.Font = font;
+            this.Text = text;
             this.Color = color;
-            this.Margin = margin;
-        }
-
-        public void NewText(string text)
-        {
-            //TODO
+            this.Margin = margin ?? Margin.Zero;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.DrawString(font, text, Position, Color, Rotation, Vector2.Zero, Scale, SpriteEffects.None, 0f);
+            spriteBatch.DrawString(Font, Text, Position, Color, Rotation, Origin, Scale, SpriteEffect, LayerDepth);
         }
     }
 }
