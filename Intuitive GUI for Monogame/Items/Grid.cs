@@ -147,8 +147,11 @@ namespace Intuitive_GUI_for_Monogame.Items
             {
                 // the first added selectable child is the default selected
                 primarySelection = new Point(column, row);
+                selection = primarySelection;
                 OnHighlight += HighlightThis;
                 OnUnhighlight += UnhighlightThis;
+                OnPress += SelectThis;
+                OnRelease += UnselectThis;
                 SelectableGrid = true;
             }
         }
@@ -278,22 +281,26 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         void HighlightThis(object sender, EventArgs e)
         {
-            if (selectableColumnsLocations.Count == 0 && selectableRowsLocations.Count == 0)
-                return;
-
-            if (!gridEntryIndexByLocation.ContainsKey(new Point(selection.X, selection.Y)) ||
-                GridEntries.ElementAt(gridEntryIndexByLocation[new Point(selection.X, selection.Y)]).UIItem is Selectable selectable)
-                ChangeSelection(primarySelection.X, primarySelection.Y);
+            if (gridEntryIndexByLocation.ContainsKey(new Point(selection.X, selection.Y)))
+                if (GridEntries.ElementAt(gridEntryIndexByLocation[new Point(selection.X, selection.Y)]).UIItem is Selectable selectable)
+                    ChangeSelection(selection.X, selection.Y);
         }
 
         void UnhighlightThis(object sender, EventArgs e)
         {
-            if (selectableColumnsLocations.Count == 0 && selectableRowsLocations.Count == 0)
-                return;
-
             foreach (GridEntry gridEntry in GridEntries)
                 if (gridEntry.UIItem is Selectable selectable)
-                    selectable.Unselect();
+                    selectable.Unhighlight();
+        }
+
+        void SelectThis(object sender, EventArgs e)
+        {
+
+        }
+
+        void UnselectThis(object sender, EventArgs e)
+        {
+
         }
 
         public override void InputTrigger(Menu.MenuInputs input)
@@ -325,6 +332,56 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
         }
 
+        public override void MouseUpdate(Vector2 internalMousePosition)
+        {
+            if (SelectableGrid)
+            {
+                Point mousePoint = new Point();
+
+                // these cases are so rare that it might as well stay commented until Margin is tested further
+                //if (columns[0].LeftPosition > internalMousePosition.X || columns[columns.Length - 1].RightPosition < internalMousePosition.X)
+                //    return;
+
+                //if (rows[0].TopPosition > internalMousePosition.Y || rows[rows.Length - 1].BottomPosition < internalMousePosition.Y)
+                //    return;
+
+                for (int i = 0; i < columns.Length; i++)
+                    if (columns[i].RightPosition > internalMousePosition.X && columns[i].LeftPosition < internalMousePosition.X)
+                    {
+                        mousePoint.X = i;
+                        break;
+                    }
+                for (int i = 0; i < rows.Length; i++)
+                    if (rows[i].BottomPosition > internalMousePosition.Y && rows[i].TopPosition < internalMousePosition.Y)
+                    {
+                        mousePoint.Y = i;
+                        break;
+                    }
+
+                if (mousePoint == selection && SelectedItem.Highlighted)
+                {
+                    SelectedItem.MouseUpdate(internalMousePosition - new Vector2(columns[mousePoint.X].LeftPosition, rows[mousePoint.Y].TopPosition));
+                    return;
+                }
+
+                if (gridEntryIndexByLocation.ContainsKey(mousePoint))
+                {
+                    if (SelectedItem != null)
+                        SelectedItem.Unhighlight();
+                    if (GridEntries.ElementAt(gridEntryIndexByLocation[mousePoint]).UIItem is Selectable selectable)
+                    {
+                        SelectedItem = selectable;
+                        SelectedItem.Highlight();
+                        selection = mousePoint;
+                        // this may need to be adjusted later but for 99% of use cases it's fine:
+                        SelectedItem.MouseUpdate(internalMousePosition - new Vector2(columns[mousePoint.X].LeftPosition, rows[mousePoint.Y].TopPosition)); 
+                    }
+                }
+                else if (SelectedItem != null)
+                    SelectedItem.Unhighlight();
+            }
+        }
+
         private void ChangeSelection(int column, int row)
         {
             Exception exception = new Exception("Tried to select a non-selectable location.");
@@ -333,16 +390,25 @@ namespace Intuitive_GUI_for_Monogame.Items
             if (gridEntryIndexByLocation.ContainsKey(location))
             {
                 if (SelectedItem != null)
-                    SelectedItem.Unselect();
+                    SelectedItem.Unhighlight();
                 if (GridEntries.ElementAt(gridEntryIndexByLocation[location]).UIItem is Selectable selectable)
                     SelectedItem = selectable;
                 else
                     throw exception;
-                SelectedItem.Select();
+                SelectedItem.Highlight();
                 selection = location;
             }
             else
                 throw exception;
+        }
+
+        public void ResetSelection()
+        {
+            foreach (GridEntry gridEntry in GridEntries)
+                if (gridEntry.UIItem is Selectable selectable)
+                    selectable.Unhighlight();
+
+            ChangeSelection(primarySelection.X, primarySelection.Y);
         }
 
         private void HandleSelectionChange(int columnPlus, int rowPlus)
@@ -414,13 +480,6 @@ namespace Intuitive_GUI_for_Monogame.Items
             //}
             //else
             //    SelectionOutOfBounds = true;
-        }
-
-        public override void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 virtualPosition)
-        {
-            foreach (GridEntry gridEntry in GridEntries)
-                if (gridEntry.UIItem is Selectable selectable)
-                    selectable.MouseUpdate(mouseState, mouseStateLast, virtualPosition);
         }
 
         public override void UpdateTransformProperties(Matrix parentMatrix)

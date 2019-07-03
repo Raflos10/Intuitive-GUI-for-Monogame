@@ -18,50 +18,32 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public bool ContainsMouse { get; private set; }
 
-        public bool Selected { get; private set; }
+        public bool Highlighted { get; private set; }
 
         public EventHandler OnHighlight, OnUnhighlight, OnPress, OnRelease;
 
         public EventArgs Args;
 
-        public void Select()
+        public void Highlight()
         {
             OnHighlight?.Invoke(this, EventArgs.Empty);
-            Selected = true;
+            Highlighted = true;
+        }
+
+        public void Unhighlight()
+        {
+            OnUnhighlight?.Invoke(this, EventArgs.Empty);
+            Highlighted = false;
+        }
+
+        public void Select()
+        {
+            OnPress?.Invoke(this, Args);
         }
 
         public void Unselect()
         {
-            OnUnhighlight?.Invoke(this, EventArgs.Empty);
-            Selected = false;
-        }
-
-        // move to menu and grid?
-        public virtual void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 virtualPosition)
-        {
-            Vector2 mousePosition = Vector2.Transform(virtualPosition, Matrix.Invert(ParentMatrix));
-            if (mousePosition.X > 0 && mousePosition.Y > 0 && mousePosition.X < Width && mousePosition.Y < Height)
-            {
-                if (!ContainsMouse)
-                {
-                    OnHighlight?.Invoke(this, EventArgs.Empty);
-                    ContainsMouse = true;
-                }
-
-                if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
-                    OnPress?.Invoke(this, Args);
-
-                if (mouseStateLast.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
-                    OnRelease?.Invoke(this, Args);
-            }
-            else
-            {
-                if (ContainsMouse)
-                {
-                    OnUnhighlight?.Invoke(this, EventArgs.Empty);
-                    ContainsMouse = false;
-                }
-            }
+            OnRelease?.Invoke(this, Args);
         }
 
         public virtual void InputTrigger(Menu.MenuInputs input)
@@ -69,5 +51,7 @@ namespace Intuitive_GUI_for_Monogame.Items
             if (input == Menu.MenuInputs.OK)
                 OnPress?.Invoke(this, Args);
         }
+
+        public virtual void MouseUpdate(Vector2 internalMousePosition) { }
     }
 }

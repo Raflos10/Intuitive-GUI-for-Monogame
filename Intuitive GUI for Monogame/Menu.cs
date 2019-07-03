@@ -96,7 +96,7 @@ namespace Intuitive_GUI_for_Monogame
         }
 
         #endregion
-        
+
         public Matrix Transform { get; private set; }
 
         public EventHandler Open, Close;
@@ -122,7 +122,7 @@ namespace Intuitive_GUI_for_Monogame
             if (Item != null && Item is Items.Selectable selectable)
             {
                 //TODO make sure internal grids are deselected too
-                selectable.Unselect();
+                selectable.Unhighlight();
             }
         }
 
@@ -132,25 +132,39 @@ namespace Intuitive_GUI_for_Monogame
             {
                 if (usingMouse)
                 {
-                    selectable.Select();
+                    selectable.Highlight();
                     usingMouse = false;
+                    // TO-DO pre-highlighted mode
                     return;
                 }
                 selectable.InputTrigger(input);
             }
         }
 
-        public void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 mousePosition)
+        public void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 mouseVirtualPosition)
         {
             if (Active)
                 if (Item is Items.Selectable selectable)
                 {
                     if (!usingMouse)
-                    {
-                        selectable.Unselect();
                         usingMouse = true;
+
+                    Vector2 mousePosition = Vector2.Transform(mouseVirtualPosition, Matrix.Invert(Transform));
+                    if (mousePosition.X > 0 && mousePosition.Y > 0 && mousePosition.X < selectable.Width && mousePosition.Y < selectable.Height)
+                    {
+                        if (!selectable.Highlighted)
+                            selectable.Highlight();
+
+                        selectable.MouseUpdate(mousePosition);
+
+                        if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
+                            selectable.Select();
+                        else if (mouseState.LeftButton == ButtonState.Released && mouseStateLast.LeftButton == ButtonState.Pressed)
+                            selectable.Unselect();
+
                     }
-                    selectable.MouseUpdate(mouseState, mouseStateLast, mousePosition);
+                    else if (selectable.Highlighted)
+                        selectable.Unhighlight();
                 }
         }
 
