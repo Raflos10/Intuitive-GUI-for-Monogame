@@ -18,7 +18,7 @@ namespace Demo.Demo_Menu
 
         public Menu1Button(Texture2D texture, EventHandler e, EventArgs args, Margin margin = null) : base(texture, margin)
         {
-            OnPress += e;
+            Action += e;
             this.Args = args;
 
             OnStateChange += State_Change;

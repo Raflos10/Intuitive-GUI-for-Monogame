@@ -41,8 +41,8 @@ namespace Intuitive_GUI_for_Monogame.Items
         {
             OnHighlight += Button_OnHighlight;
             OnUnhighlight += Button_OnUnhighlight;
-            OnPress += Button_OnPress;
-            OnRelease += Button_OnRelease;
+            OnMouseClick += Button_OnPress;
+            OnMouseRelease += Button_OnRelease;
         }
 
         private void Button_OnHighlight(object sender, EventArgs e)

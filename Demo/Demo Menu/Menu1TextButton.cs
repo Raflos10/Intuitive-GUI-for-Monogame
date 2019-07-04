@@ -22,8 +22,10 @@ namespace Demo.Demo_Menu
 
         public Menu1TextButton(BitmapFont font, string text, EventHandler e, EventArgs args, Margin margin = null) : base(font, text, margin)
         {
-            OnPress += e;
+            Action += e;
             this.Args = args;
+
+            this.StrictBoundingBox = true;
 
             statesColors = new Dictionary<ButtonState, Color>
             {

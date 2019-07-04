@@ -14,20 +14,29 @@ namespace Intuitive_GUI_for_Monogame.Items
 {
     public abstract class Selectable : UIElement
     {
-        //public bool IsSelectable { get; protected set; }
-
-        public bool ContainsMouse { get; private set; }
-
         public bool Highlighted { get; private set; }
 
         /// <summary>
-        /// The item will remain highlighted even if the mouse goes outside this element.
+        /// The element will remain highlighted even if the mouse goes outside this element.
         /// </summary>
         public bool PersistantHighlight { get; set; } = false;
 
-        public EventHandler OnHighlight, OnUnhighlight, OnPress, OnRelease;
+        /// <summary>
+        /// If true, the element will only highlight when the mouse is directly over it. 
+        /// <para>If false, the element will highlight as long as the mouse is inside its territory. </para>
+        /// </summary>
+        public bool StrictBoundingBox { get; set; } = false;
 
-        public EventArgs Args;
+        /// <summary>
+        /// Determines whether the action should be invoked on mouse press or mouse release.
+        /// <para>Note: For now, button/key presses will always invoke actions on press, not release. </para>
+        /// <para>This also means that OnRelease will not be invoked by button/key presses. </para>
+        /// </summary>
+        public bool ActionOnRelease { get; set; } = false;
+
+        public EventHandler OnHighlight, OnUnhighlight, OnMouseClick, OnMouseRelease, OnButtonTrigger, Action;
+
+        public EventArgs Args { get; set; }
 
         public void Highlight()
         {
@@ -41,20 +50,34 @@ namespace Intuitive_GUI_for_Monogame.Items
             Highlighted = false;
         }
 
-        public void Select()
+        public virtual void MouseClick(Vector2 mousePosition)
         {
-            OnPress?.Invoke(this, Args);
+            OnMouseClick?.Invoke(this, Args);
+            if (!ActionOnRelease)
+                Action?.Invoke(this, Args);
         }
 
-        public void Unselect()
+        public virtual void MouseRelease(Vector2 mousePosition)
         {
-            OnRelease?.Invoke(this, Args);
+            OnMouseRelease?.Invoke(this, Args);
+            if (ActionOnRelease)
+                Action?.Invoke(this, Args);
         }
 
         public virtual void InputTrigger(Menu.MenuInputs input)
         {
             if (input == Menu.MenuInputs.OK)
-                OnPress?.Invoke(this, Args);
+            {
+                OnButtonTrigger?.Invoke(this, Args);
+                Action?.Invoke(this, Args);
+            }
+        }
+
+        public bool ContainsMouse(Vector2 localMousePosition)
+        {
+            if (localMousePosition.X > 0 && localMousePosition.Y > 0 && localMousePosition.X < Width && localMousePosition.Y < Height)
+                return true;
+            return false;
         }
 
         public virtual void MouseUpdate(Vector2 internalMousePosition) { }

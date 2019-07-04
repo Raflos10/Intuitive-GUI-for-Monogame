@@ -112,7 +112,7 @@ namespace Intuitive_GUI_for_Monogame
         /// Determines whether this menu's (selectable) item should be highlighted by default.
         /// If not, it will take one InputTrigger to highlight it.
         /// </summary>
-        public bool HighlightedByDefault { get; set; } = true;
+        public bool HighlightedByDefault { get; set; } = false;
 
         private bool usingMouse = false;
 
@@ -156,7 +156,7 @@ namespace Intuitive_GUI_for_Monogame
                     selectable.Highlight();
                     return;
                 }
-                
+
                 selectable.InputTrigger(input);
             }
         }
@@ -173,30 +173,29 @@ namespace Intuitive_GUI_for_Monogame
                     if (selectable.PersistantHighlight)
                     {
                         selectable.MouseUpdate(mousePosition);
-                        ClickOrRelease(selectable);
+                        ClickOrRelease(selectable, mousePosition);
                     }
                     else
                     {
-                        if (mousePosition.X > 0 && mousePosition.Y > 0 && mousePosition.X < selectable.Width && mousePosition.Y < selectable.Height)
+                        if (selectable.ContainsMouse(mousePosition))
                         {
                             if (!selectable.Highlighted)
                                 selectable.Highlight();
 
                             selectable.MouseUpdate(mousePosition);
-
-                            ClickOrRelease(selectable);
+                            ClickOrRelease(selectable, mousePosition);
                         }
                         else if (selectable.Highlighted)
                             selectable.Unhighlight();
                     }
                 }
 
-            void ClickOrRelease(Items.Selectable selectable)
+            void ClickOrRelease(Items.Selectable selectable, Vector2 mousePosition)
             {
                 if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
-                    selectable.Select();
+                    selectable.MouseClick(mousePosition);
                 else if (mouseState.LeftButton == ButtonState.Released && mouseStateLast.LeftButton == ButtonState.Pressed)
-                    selectable.Unselect();
+                    selectable.MouseRelease(mousePosition);
             }
         }
 

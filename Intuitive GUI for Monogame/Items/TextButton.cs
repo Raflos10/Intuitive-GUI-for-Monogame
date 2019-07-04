@@ -22,6 +22,8 @@ namespace Intuitive_GUI_for_Monogame.Items
             this.Font = font;
             this.Text = text;
 
+            this.StrictBoundingBox = true;
+
             this.Margin = margin ?? Margin.Zero;
 
             Width = (int)font.MeasureString(text).X;

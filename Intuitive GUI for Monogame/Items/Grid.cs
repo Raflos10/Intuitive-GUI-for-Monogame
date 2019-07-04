@@ -149,8 +149,6 @@ namespace Intuitive_GUI_for_Monogame.Items
                 selection = primarySelection;
                 OnHighlight += HighlightThis;
                 OnUnhighlight += UnhighlightThis;
-                OnPress += SelectThis;
-                OnRelease += UnselectThis;
                 SelectableGrid = true;
             }
         }
@@ -292,14 +290,22 @@ namespace Intuitive_GUI_for_Monogame.Items
                     selectable.Unhighlight();
         }
 
-        void SelectThis(object sender, EventArgs e)
+        public override void MouseClick(Vector2 mousePosition)
         {
+            base.MouseClick(mousePosition);
 
+            Vector2 relativeMousePosition = GetRelativeMousePosition(mousePosition);
+            if (SelectedItem.ContainsMouse(relativeMousePosition))
+                SelectedItem.MouseClick(relativeMousePosition);
         }
 
-        void UnselectThis(object sender, EventArgs e)
+        public override void MouseRelease(Vector2 mousePosition)
         {
+            base.MouseRelease(mousePosition);
 
+            Vector2 relativeMousePosition = GetRelativeMousePosition(mousePosition);
+            if (SelectedItem.ContainsMouse(relativeMousePosition))
+                SelectedItem.MouseRelease(relativeMousePosition);
         }
 
         public override void InputTrigger(Menu.MenuInputs input)
@@ -357,12 +363,21 @@ namespace Intuitive_GUI_for_Monogame.Items
                         break;
                     }
 
+                // current selection
                 if (mousePoint == selection && SelectedItem.Highlighted)
                 {
-                    SelectedItem.MouseUpdate(internalMousePosition - new Vector2(columns[mousePoint.X].LeftPosition, rows[mousePoint.Y].TopPosition));
+                    Vector2 selectableRelativeMousePosition = GetRelativeMousePosition(internalMousePosition);
+
+                    SelectedItem.MouseUpdate(selectableRelativeMousePosition);
+                    if (SelectedItem.StrictBoundingBox)
+                    {
+                        if (!SelectedItem.ContainsMouse(selectableRelativeMousePosition))
+                            SelectedItem.Unhighlight();
+                    }
                     return;
                 }
 
+                // new selection
                 if (gridEntryIndexByLocation.ContainsKey(mousePoint))
                 {
                     if (SelectedItem != null)
@@ -370,15 +385,28 @@ namespace Intuitive_GUI_for_Monogame.Items
                     if (GridEntries.ElementAt(gridEntryIndexByLocation[mousePoint]).UIItem is Selectable selectable)
                     {
                         SelectedItem = selectable;
-                        SelectedItem.Highlight();
                         selection = mousePoint;
-                        // this may need to be adjusted later but for 99% of use cases it's fine:
-                        SelectedItem.MouseUpdate(internalMousePosition - new Vector2(columns[mousePoint.X].LeftPosition, rows[mousePoint.Y].TopPosition)); 
+                        Vector2 selectableRelativeMousePosition = GetRelativeMousePosition(internalMousePosition);
+                        if (selectable.StrictBoundingBox)
+                        {
+                            if (SelectedItem.ContainsMouse(selectableRelativeMousePosition))
+                                SelectedItem.Highlight();
+                        }
+                        else
+                            SelectedItem.Highlight();
+                        SelectedItem.MouseUpdate(selectableRelativeMousePosition);
                     }
                 }
                 else if (!PersistantHighlight && SelectedItem != null)
                     SelectedItem.Unhighlight();
             }
+        }
+
+        // this may need to be adjusted later but for 99% of use cases it's fine
+        // maybe check the previous commits to see how it was done when MouseUpdate was calculated inside Selectable class
+        Vector2 GetRelativeMousePosition(Vector2 externalMousePosition)
+        {
+            return externalMousePosition - new Vector2(columns[selection.X].LeftPosition,rows[selection.Y].TopPosition);
         }
 
         private void ChangeSelection(int column, int row)
@@ -401,7 +429,7 @@ namespace Intuitive_GUI_for_Monogame.Items
                 throw exception;
         }
 
-        public void ResetSelection()
+        public override void ResetSelection()
         {
             foreach (GridEntry gridEntry in GridEntries)
                 if (gridEntry.UIItem is Selectable selectable)
@@ -453,32 +481,6 @@ namespace Intuitive_GUI_for_Monogame.Items
                 }
                 return resultCandidate;
             }
-
-            //if (selectableColumns.Contains(Selection.Item1 + x) && selectableRows.Contains(Selection.Item2 + y))
-            //{
-            //    Selectable previousItem = (Selectable)GridEntries[selectableLocations[Selection]].UIItem;
-            //    bool skip = false;
-            //    if (previousItem.GetType() == typeof(Grid))
-            //    {
-            //        Grid previousGrid = (Grid)previousItem;
-            //        if (previousGrid.SelectionOutOfBounds)
-            //        {
-            //            previousGrid.Selected = false;
-            //            previousGrid.SelectionOutOfBounds = false;
-            //        }
-            //        else
-            //            skip = true;
-            //    }
-            //    if (!skip)
-            //    {
-            //        previousItem.Selected = false;
-            //        Selection = new Tuple<int, int>(Selection.Item1 + x, Selection.Item2 + y);
-            //        Selectable nextItem = (Selectable)GridEntries[selectableLocations[Selection]].UIItem;
-            //        nextItem.Selected = true;
-            //    }
-            //}
-            //else
-            //    SelectionOutOfBounds = true;
         }
 
         public override void UpdateTransformProperties(Matrix parentMatrix)
