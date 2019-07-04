@@ -23,6 +23,10 @@ namespace Intuitive_GUI_for_Monogame
         public MenuSystem(Game game, SpriteBatch spriteBatch) : base(game)
         {
             this.spriteBatch = spriteBatch;
+
+            // prevent MouseUpdate from being called on entry
+            mouseStateLast = mouseState;
+            mouseState = Mouse.GetState();
         }
 
         public override void Update(GameTime gameTime)

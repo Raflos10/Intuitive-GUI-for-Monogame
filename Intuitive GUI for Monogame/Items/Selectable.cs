@@ -20,6 +20,11 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public bool Highlighted { get; private set; }
 
+        /// <summary>
+        /// The item will remain highlighted even if the mouse goes outside this element.
+        /// </summary>
+        public bool PersistantHighlight { get; set; } = false;
+
         public EventHandler OnHighlight, OnUnhighlight, OnPress, OnRelease;
 
         public EventArgs Args;
@@ -53,5 +58,7 @@ namespace Intuitive_GUI_for_Monogame.Items
         }
 
         public virtual void MouseUpdate(Vector2 internalMousePosition) { }
+
+        public virtual void ResetSelection() { }
     }
 }

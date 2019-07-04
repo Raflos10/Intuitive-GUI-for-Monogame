@@ -31,7 +31,7 @@ namespace Demo.Demo_Menu
             Grid mainGrid = new Grid();
 
             Grid subGrid = new Grid();
-
+            
             subGrid.AddColumnDefinition(ColumnDefinition.Auto);
             subGrid.AddColumnDefinition(ColumnDefinition.Auto);
             subGrid.AddRowDefinition(RowDefinition.Auto);
@@ -40,7 +40,7 @@ namespace Demo.Demo_Menu
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("Subgrid 1")), 1, 0);
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("Subgrid 2")), 0, 1);
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("Subgrid 3")), 1, 1);
-
+            
             mainGrid.AddColumnDefinition(ColumnDefinition.Fill);
             mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
             mainGrid.AddColumnDefinition(ColumnDefinition.Auto);

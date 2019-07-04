@@ -46,14 +46,11 @@ namespace Intuitive_GUI_for_Monogame.Items
         private readonly Dictionary<int, List<int>> selectableRowsLocations = new Dictionary<int, List<int>>();
         private int firstSelectableColumn, firstSelectableRow, lastSelectableColumn, lastSelectableRow;
 
-        #endregion
-
         private Point selection, primarySelection;
-        public bool SelectionOutOfBounds { get; private set; } // make function?
         public Selectable SelectedItem { get; private set; }
 
         public bool SelectableGrid { get; private set; }
-        private bool outOfBounds = false;
+        private bool outOfBounds = false; // make function?
         public bool OutOfBounds
         {
             get
@@ -64,6 +61,8 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
             private set { outOfBounds = value; }
         }
+
+        #endregion
 
         /// <summary>
         /// Grid for holding multiple UI Items.
@@ -377,7 +376,7 @@ namespace Intuitive_GUI_for_Monogame.Items
                         SelectedItem.MouseUpdate(internalMousePosition - new Vector2(columns[mousePoint.X].LeftPosition, rows[mousePoint.Y].TopPosition)); 
                     }
                 }
-                else if (SelectedItem != null)
+                else if (!PersistantHighlight && SelectedItem != null)
                     SelectedItem.Unhighlight();
             }
         }

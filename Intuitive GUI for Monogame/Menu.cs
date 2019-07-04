@@ -97,17 +97,28 @@ namespace Intuitive_GUI_for_Monogame
 
         #endregion
 
-        public Matrix Transform { get; private set; }
+        protected Matrix Transform { get; private set; }
 
         public EventHandler Open, Close;
 
         public enum MenuInputs { Up, Down, Left, Right, OK, Cancel, Pause }
+
+        /// <summary>
+        /// If false, the menu will still be visible but not interactable.
+        /// </summary>
         public bool Active { get; set; } = true;
 
-        private bool usingMouse = true;
+        /// <summary>
+        /// Determines whether this menu's (selectable) item should be highlighted by default.
+        /// If not, it will take one InputTrigger to highlight it.
+        /// </summary>
+        public bool HighlightedByDefault { get; set; } = true;
+
+        private bool usingMouse = false;
 
         public Menu()
         {
+            Open += HighlightIfDefault;
             Close += ResetSelection;
         }
 
@@ -115,15 +126,22 @@ namespace Intuitive_GUI_for_Monogame
         {
             if (!rememberSelection)
                 Close += ResetSelection;
+            Open += HighlightIfDefault;
+        }
+
+        void HighlightIfDefault(object sender, EventArgs e)
+        {
+            if (HighlightedByDefault && item is Items.Selectable selectable)
+                selectable.Highlight();
         }
 
         void ResetSelection(object sender, EventArgs e)
         {
             if (Item != null && Item is Items.Selectable selectable)
-            {
-                //TODO make sure internal grids are deselected too
-                selectable.Unhighlight();
-            }
+                if (HighlightedByDefault)
+                    selectable.ResetSelection();
+                else
+                    selectable.Unhighlight();
         }
 
         public virtual void InputTrigger(MenuInputs input)
@@ -131,12 +149,14 @@ namespace Intuitive_GUI_for_Monogame
             if (Item is Items.Selectable selectable)
             {
                 if (usingMouse)
+                    usingMouse = false;
+
+                if (!HighlightedByDefault && !selectable.Highlighted)
                 {
                     selectable.Highlight();
-                    usingMouse = false;
-                    // TO-DO pre-highlighted mode
                     return;
                 }
+                
                 selectable.InputTrigger(input);
             }
         }
@@ -150,22 +170,34 @@ namespace Intuitive_GUI_for_Monogame
                         usingMouse = true;
 
                     Vector2 mousePosition = Vector2.Transform(mouseVirtualPosition, Matrix.Invert(Transform));
-                    if (mousePosition.X > 0 && mousePosition.Y > 0 && mousePosition.X < selectable.Width && mousePosition.Y < selectable.Height)
+                    if (selectable.PersistantHighlight)
                     {
-                        if (!selectable.Highlighted)
-                            selectable.Highlight();
-
                         selectable.MouseUpdate(mousePosition);
-
-                        if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
-                            selectable.Select();
-                        else if (mouseState.LeftButton == ButtonState.Released && mouseStateLast.LeftButton == ButtonState.Pressed)
-                            selectable.Unselect();
-
+                        ClickOrRelease(selectable);
                     }
-                    else if (selectable.Highlighted)
-                        selectable.Unhighlight();
+                    else
+                    {
+                        if (mousePosition.X > 0 && mousePosition.Y > 0 && mousePosition.X < selectable.Width && mousePosition.Y < selectable.Height)
+                        {
+                            if (!selectable.Highlighted)
+                                selectable.Highlight();
+
+                            selectable.MouseUpdate(mousePosition);
+
+                            ClickOrRelease(selectable);
+                        }
+                        else if (selectable.Highlighted)
+                            selectable.Unhighlight();
+                    }
                 }
+
+            void ClickOrRelease(Items.Selectable selectable)
+            {
+                if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
+                    selectable.Select();
+                else if (mouseState.LeftButton == ButtonState.Released && mouseStateLast.LeftButton == ButtonState.Pressed)
+                    selectable.Unselect();
+            }
         }
 
         void UpdateTransform()
