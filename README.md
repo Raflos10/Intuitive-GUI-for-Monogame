@@ -2,9 +2,10 @@
 A WPF Inspired GUI for Monogame
 
 # Information
-This GUI is meant to be intuitive for both the developer and the user. WPF (Windows Presentation Foundation) uses a grid-based system to link elements together in a very clean way, and that is the main basis of this GUI. It also takes some inspiration from Flash in several ways. 
-Another reason for the grid-based system is to make controller/keyboard support easy. This will be implemented later. 
-Right now it's very basic, but will allow you to easily make grid-based menus that move, scale, and rotate all of their items as one. I encourage anyone to clone this project and make more useful UI elements that are missing, such as radio buttons, tab windows, listboxes, and so-on. 
+This GUI is meant to be intuitive for both the developer and the user. WPF (Windows Presentation Foundation) uses a grid-based system to link elements together in a very clean way, and that is the main basis of this GUI.
+Another reason for the grid-based system is to help in supporting keyboard and controller support in menus. I'm proud to say that keyboard, mouse, and controller input will all work. 
+Also, the grid-based menus will move, scale, and rotate all of their items as one, so menu animations are easy. 
+I encourage anyone to clone this project and make more useful UI elements that are missing, such as radio buttons, tab windows, listboxes, and so-on. 
 
 # Steps to Getting Started
 1. Download the latest [release](https://github.com/Raflos10/Intuitive-GUI-for-Monogame/releases) and reference it in your project.
