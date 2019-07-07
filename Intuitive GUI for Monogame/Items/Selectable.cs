@@ -50,18 +50,24 @@ namespace Intuitive_GUI_for_Monogame.Items
             Highlighted = false;
         }
 
-        public virtual void MouseClick(Vector2 mousePosition)
+        public virtual void MouseClick(Vector2 mouseGlobalPosition)
         {
-            OnMouseClick?.Invoke(this, Args);
-            if (!ActionOnRelease)
-                Action?.Invoke(this, Args);
+            if (ContainsMouse(mouseGlobalPosition))
+            {
+                OnMouseClick?.Invoke(this, Args);
+                if (!ActionOnRelease)
+                    Action?.Invoke(this, Args);
+            }
         }
 
-        public virtual void MouseRelease(Vector2 mousePosition)
+        public virtual void MouseRelease(Vector2 mouseGlobalPosition)
         {
-            OnMouseRelease?.Invoke(this, Args);
-            if (ActionOnRelease)
-                Action?.Invoke(this, Args);
+            if (ContainsMouse(mouseGlobalPosition))
+            {
+                OnMouseRelease?.Invoke(this, Args);
+                if (ActionOnRelease)
+                    Action?.Invoke(this, Args);
+            }
         }
 
         public virtual void InputTrigger(Menu.MenuInputs input)
@@ -73,14 +79,36 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
         }
 
-        public bool ContainsMouse(Vector2 localMousePosition)
+        public bool ContainsMouse(Vector2 mouseGlobalPosition)
         {
-            if (localMousePosition.X > 0 && localMousePosition.Y > 0 && localMousePosition.X < Width && localMousePosition.Y < Height)
+            Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
+
+            if (StrictBoundingBox)
+            {
+                if (mouseLocalPosition.X > 0 && mouseLocalPosition.Y > 0 && mouseLocalPosition.X < Width && mouseLocalPosition.Y < Height)
+                    return true;
+            }
+            else if (mouseLocalPosition.X > 0 && mouseLocalPosition.Y > 0 && mouseLocalPosition.X < BoundingWidth && mouseLocalPosition.Y < BoundingHeight)
                 return true;
+
             return false;
         }
 
-        public virtual void MouseUpdate(Vector2 internalMousePosition) { }
+        protected Vector2 GetMouseLocalPosition(Vector2 mouseGlobalPosition)
+        {
+            return Vector2.Transform(mouseGlobalPosition, Matrix.Invert(ParentMatrix)) - new Vector2(Margin.Left, Margin.Top);
+        }
+
+        public virtual void MouseUpdate(Vector2 mouseGlobalPosition)
+        {
+            if (!Highlighted)
+            {
+                if (ContainsMouse(mouseGlobalPosition))
+                    Highlight();
+            }
+            else if (!PersistantHighlight && !ContainsMouse(mouseGlobalPosition))
+                Unhighlight();
+        }
 
         public virtual void ResetSelection() { }
     }

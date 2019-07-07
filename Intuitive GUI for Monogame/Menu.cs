@@ -89,6 +89,7 @@ namespace Intuitive_GUI_for_Monogame
             set
             {
                 item = value;
+                item.UpdateBounding(new Items.Column(0, Width), new Items.Row(0, height));
                 if (item is Items.Grid grid)
                     grid.BuildGrid(new Items.ColumnDefinition(Width), new Items.RowDefinition(Height));
                 UpdateTransform();
@@ -112,7 +113,7 @@ namespace Intuitive_GUI_for_Monogame
         /// Determines whether this menu's (selectable) item should be highlighted by default.
         /// If not, it will take one InputTrigger to highlight it.
         /// </summary>
-        public bool HighlightedByDefault { get; set; } = false;
+        public bool HighlightedByDefault { get; set; } = true;
 
         private bool usingMouse = false;
 
@@ -161,7 +162,7 @@ namespace Intuitive_GUI_for_Monogame
             }
         }
 
-        public void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 mouseVirtualPosition)
+        public void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 mouseGlobalPosition)
         {
             if (Active)
                 if (Item is Items.Selectable selectable)
@@ -169,34 +170,14 @@ namespace Intuitive_GUI_for_Monogame
                     if (!usingMouse)
                         usingMouse = true;
 
-                    Vector2 mousePosition = Vector2.Transform(mouseVirtualPosition, Matrix.Invert(Transform));
-                    if (selectable.PersistantHighlight)
-                    {
-                        selectable.MouseUpdate(mousePosition);
-                        ClickOrRelease(selectable, mousePosition);
-                    }
-                    else
-                    {
-                        if (selectable.ContainsMouse(mousePosition))
-                        {
-                            if (!selectable.Highlighted)
-                                selectable.Highlight();
+                    selectable.MouseUpdate(mouseGlobalPosition);
 
-                            selectable.MouseUpdate(mousePosition);
-                            ClickOrRelease(selectable, mousePosition);
-                        }
-                        else if (selectable.Highlighted)
-                            selectable.Unhighlight();
-                    }
+                    if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
+                        selectable.MouseClick(mouseGlobalPosition);
+                    else if (mouseState.LeftButton == ButtonState.Released && mouseStateLast.LeftButton == ButtonState.Pressed)
+                        selectable.MouseRelease(mouseGlobalPosition);
                 }
 
-            void ClickOrRelease(Items.Selectable selectable, Vector2 mousePosition)
-            {
-                if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
-                    selectable.MouseClick(mousePosition);
-                else if (mouseState.LeftButton == ButtonState.Released && mouseStateLast.LeftButton == ButtonState.Pressed)
-                    selectable.MouseRelease(mousePosition);
-            }
         }
 
         void UpdateTransform()

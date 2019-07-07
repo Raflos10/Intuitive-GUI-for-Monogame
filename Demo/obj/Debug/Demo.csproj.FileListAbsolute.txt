@@ -76,3 +76,4 @@ C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\obj\Debug\Demo.exe
 C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\obj\Debug\Demo.pdb
 C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Debug\Intuitive GUI for Monogame MGE Items.dll
 C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Debug\Intuitive GUI for Monogame MGE Items.pdb
+C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Demo\bin\DesktopGL\AnyCPU\Debug\Content\test_image_s.xnb

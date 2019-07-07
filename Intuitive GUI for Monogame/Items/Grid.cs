@@ -42,12 +42,15 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         #region Selectable Data
 
-        private readonly Dictionary<int, List<int>> selectableColumnsLocations = new Dictionary<int, List<int>>();
-        private readonly Dictionary<int, List<int>> selectableRowsLocations = new Dictionary<int, List<int>>();
+        private readonly Dictionary<int, List<int>> selectableRowsInColumn = new Dictionary<int, List<int>>();
+        private readonly Dictionary<int, List<int>> selectableColumnsInRow = new Dictionary<int, List<int>>();
         private int firstSelectableColumn, firstSelectableRow, lastSelectableColumn, lastSelectableRow;
 
-        private Point selection, primarySelection;
-        public Selectable SelectedItem { get; private set; }
+        private Point selection, primarySelection, ghostSelection; 
+        public Selectable SelectedItem
+        {
+            get { return (Selectable)GridEntries.ElementAt(gridEntryIndexByLocation[new Point(selection.X, selection.Y)]).UIItem; }
+        }
 
         public bool SelectableGrid { get; private set; }
         private bool outOfBounds = false; // make function?
@@ -123,31 +126,32 @@ namespace Intuitive_GUI_for_Monogame.Items
 
             // if the item is Selectable, make sure its column and row are selectable
             // also store the selectable item's location in it's specific column/row
-            if (!selectableColumnsLocations.ContainsKey(column))
+            if (!selectableRowsInColumn.ContainsKey(column))
             {
-                if (firstSelectableColumn > column || selectableColumnsLocations.Count == 0)
+                if (firstSelectableColumn > column || selectableRowsInColumn.Count == 0)
                     firstSelectableColumn = column;
                 if (lastSelectableColumn < column)
                     lastSelectableColumn = column;
-                selectableColumnsLocations.Add(column, new List<int>());
-                selectableColumnsLocations[column].Add(row);
+                selectableRowsInColumn.Add(column, new List<int>());
             }
-            if (!selectableRowsLocations.ContainsKey(row))
+            selectableRowsInColumn[column].Add(row);
+
+            if (!selectableColumnsInRow.ContainsKey(row))
             {
-                if (firstSelectableRow > row || selectableRowsLocations.Count == 0)
+                if (firstSelectableRow > row || selectableColumnsInRow.Count == 0)
                     firstSelectableRow = row;
                 if (lastSelectableRow < row)
                     lastSelectableRow = row;
-                selectableRowsLocations.Add(row, new List<int>());
-                selectableRowsLocations[row].Add(column);
+                selectableColumnsInRow.Add(row, new List<int>());
             }
+            selectableColumnsInRow[row].Add(column);
 
             if (!SelectableGrid)
             {
                 // the first added selectable child is the default selected
                 primarySelection = new Point(column, row);
                 selection = primarySelection;
-                SelectedItem = selectable;
+                ghostSelection = primarySelection;
                 OnHighlight += HighlightThis;
                 OnUnhighlight += UnhighlightThis;
                 SelectableGrid = true;
@@ -275,38 +279,33 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
 
             #endregion
+
+            foreach (GridEntry gridEntry in GridEntries)
+                gridEntry.UIItem.UpdateBounding(columns[gridEntry.Column], rows[gridEntry.Row]);
         }
 
         void HighlightThis(object sender, EventArgs e)
         {
-            if (gridEntryIndexByLocation.ContainsKey(new Point(selection.X, selection.Y)))
-                if (GridEntries.ElementAt(gridEntryIndexByLocation[new Point(selection.X, selection.Y)]).UIItem is Selectable selectable)
-                    ChangeSelection(selection.X, selection.Y);
+            SelectedItem?.Highlight();
         }
 
         void UnhighlightThis(object sender, EventArgs e)
         {
-            foreach (GridEntry gridEntry in GridEntries)
-                if (gridEntry.UIItem is Selectable selectable)
-                    selectable.Unhighlight();
+            SelectedItem?.Unhighlight();
         }
 
-        public override void MouseClick(Vector2 mousePosition)
+        public override void MouseClick(Vector2 mouseGlobalPosition)
         {
-            base.MouseClick(mousePosition);
+            base.MouseClick(mouseGlobalPosition);
 
-            Vector2 relativeMousePosition = GetRelativeMousePosition(mousePosition, selection);
-            if (SelectedItem.ContainsMouse(relativeMousePosition))
-                SelectedItem.MouseClick(relativeMousePosition);
+            SelectedItem.MouseClick(mouseGlobalPosition);
         }
 
-        public override void MouseRelease(Vector2 mousePosition)
+        public override void MouseRelease(Vector2 mouseGlobalPosition)
         {
-            base.MouseRelease(mousePosition);
+            base.MouseRelease(mouseGlobalPosition);
 
-            Vector2 relativeMousePosition = GetRelativeMousePosition(mousePosition, selection);
-            if (SelectedItem.ContainsMouse(relativeMousePosition))
-                SelectedItem.MouseRelease(relativeMousePosition);
+            SelectedItem.MouseRelease(mouseGlobalPosition);
         }
 
         public override void InputTrigger(Menu.MenuInputs input)
@@ -338,93 +337,61 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
         }
 
-        public override void MouseUpdate(Vector2 internalMousePosition)
+        public override void MouseUpdate(Vector2 mouseGlobalPosition)
         {
             if (SelectableGrid)
             {
-                Point mousePoint = new Point();
+                base.MouseUpdate(mouseGlobalPosition);
 
-                // these cases can probably only happen if there is a Margin
-                if (columns[0].LeftPosition >= internalMousePosition.X || columns[columns.Length - 1].RightPosition <= internalMousePosition.X ||
-                    rows[0].TopPosition >= internalMousePosition.Y || rows[rows.Length - 1].BottomPosition <= internalMousePosition.Y)
+                Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition) + new Vector2(Margin.Left, Margin.Top);
+
+                // mouse has not gone outside selected space
+                if (columns[selection.X].LeftPosition <= mouseLocalPosition.X && columns[selection.X].RightPosition >= mouseLocalPosition.X &&
+                    rows[selection.Y].TopPosition <= mouseLocalPosition.Y && rows[selection.Y].BottomPosition >= mouseLocalPosition.Y)
                 {
-                    if (!PersistantHighlight && SelectedItem != null && SelectedItem.Highlighted)
-                        SelectedItem.Unhighlight();
+                    SelectedItem.MouseUpdate(mouseGlobalPosition);
+
                     return;
                 }
 
+                // mouse has gone outside selected space
+
+                if (!ContainsMouse(mouseGlobalPosition))
+                    return;
+
+                Point mousePoint = selection;
+
                 for (int i = 0; i < columns.Length; i++)
-                    if (columns[i].RightPosition > internalMousePosition.X && columns[i].LeftPosition < internalMousePosition.X)
+                    if (columns[i].RightPosition >= mouseLocalPosition.X && columns[i].LeftPosition <= mouseLocalPosition.X)
                     {
                         mousePoint.X = i;
                         break;
                     }
                 for (int i = 0; i < rows.Length; i++)
-                    if (rows[i].BottomPosition > internalMousePosition.Y && rows[i].TopPosition < internalMousePosition.Y)
+                    if (rows[i].BottomPosition >= mouseLocalPosition.Y && rows[i].TopPosition <= mouseLocalPosition.Y)
                     {
                         mousePoint.Y = i;
                         break;
                     }
 
-                // current selection
-                if (mousePoint == selection)
+                if (gridEntryIndexByLocation.ContainsKey(mousePoint) && GridEntries.ElementAt(gridEntryIndexByLocation[mousePoint]).UIItem is Selectable selectable)
                 {
-                    if (SelectedItem.Highlighted)
-                    {
-                        Vector2 selectableRelativeMousePosition = GetRelativeMousePosition(internalMousePosition, mousePoint);
-
-                        SelectedItem.MouseUpdate(selectableRelativeMousePosition);
-                        if (SelectedItem.StrictBoundingBox && !PersistantHighlight)
-                        {
-                            if (!SelectedItem.ContainsMouse(selectableRelativeMousePosition))
-                                SelectedItem.Unhighlight();
-                        }
-                        return;
-                    }
-                    // literally never called
-                    else return;
-                }
-
-                // new selection
-                if (gridEntryIndexByLocation.ContainsKey(mousePoint))
-                {
-                    Vector2 selectableRelativeMousePosition = GetRelativeMousePosition(internalMousePosition, mousePoint);
-
-                    // if Persistant Highlight is on and the mouse isn't directly over the new selection, keep the old one highlighted
-                    if (PersistantHighlight && GridEntries.ElementAt(gridEntryIndexByLocation[mousePoint]).UIItem is
-                        Selectable newSelectable && newSelectable.StrictBoundingBox && !newSelectable.ContainsMouse(selectableRelativeMousePosition))
+                    // if Persistant Highlight is on and the mouse isn't directly over the new selection, don't do anything yet
+                    if (PersistantHighlight && selectable.StrictBoundingBox && !selectable.ContainsMouse(mouseGlobalPosition))
                         return;
                     else
                         SelectedItem.Unhighlight();
 
-                    if (GridEntries.ElementAt(gridEntryIndexByLocation[mousePoint]).UIItem is Selectable selectable)
-                    {
-                        SelectedItem = selectable;
-                        selection = mousePoint;
+                    selection = mousePoint;
 
-                        if (!Highlighted)
-                            Highlight();
-                        else if (selectable.StrictBoundingBox)
-                        {
-                            if (SelectedItem.ContainsMouse(selectableRelativeMousePosition))
-                                SelectedItem.Highlight();
-                        }
-                        else
-                            SelectedItem.Highlight();
+                    if (!Highlighted)
+                        Highlight();
 
-                        SelectedItem.MouseUpdate(selectableRelativeMousePosition);
-                    }
+                    SelectedItem.MouseUpdate(mouseGlobalPosition);
                 }
                 else if (!PersistantHighlight)
                     SelectedItem.Unhighlight();
             }
-        }
-
-        // this may need to be adjusted later but for 99% of use cases it's fine
-        // maybe check the previous commits to see how it was done when MouseUpdate was calculated inside Selectable class
-        Vector2 GetRelativeMousePosition(Vector2 externalMousePosition, Point gridPoint)
-        {
-            return externalMousePosition - new Vector2(columns[gridPoint.X].LeftPosition, rows[gridPoint.Y].TopPosition);
         }
 
         private void ChangeSelection(int column, int row)
@@ -434,14 +401,10 @@ namespace Intuitive_GUI_for_Monogame.Items
             Point location = new Point(column, row);
             if (gridEntryIndexByLocation.ContainsKey(location))
             {
-                if (SelectedItem != null)
-                    SelectedItem.Unhighlight();
                 if (GridEntries.ElementAt(gridEntryIndexByLocation[location]).UIItem is Selectable selectable)
-                    SelectedItem = selectable;
+                    selection = location;
                 else
                     throw exception;
-                SelectedItem.Highlight();
-                selection = location;
             }
             else
                 throw exception;
@@ -451,9 +414,48 @@ namespace Intuitive_GUI_for_Monogame.Items
         {
             foreach (GridEntry gridEntry in GridEntries)
                 if (gridEntry.UIItem is Selectable selectable)
-                    selectable.Unhighlight();
+                    selectable.ResetSelection();
 
             ChangeSelection(primarySelection.X, primarySelection.Y);
+        }
+
+        public void HighlightFromOutside(Menu.MenuInputs input)
+        {
+            switch (input)
+            {
+                case Menu.MenuInputs.Left:
+                    selection = new Point(lastSelectableColumn, GetClosestNumber(selection.Y, selectableRowsInColumn[lastSelectableColumn].ToArray()));
+                    break;
+
+                case Menu.MenuInputs.Right:
+                    selection = new Point(firstSelectableColumn, GetClosestNumber(selection.Y, selectableRowsInColumn[firstSelectableColumn].ToArray()));
+                    break;
+
+                case Menu.MenuInputs.Up:
+                    selection = new Point(GetClosestNumber(selection.X, selectableColumnsInRow[lastSelectableRow].ToArray()), lastSelectableRow);
+                    break;
+
+                case Menu.MenuInputs.Down:
+                    selection = new Point(GetClosestNumber(selection.X, selectableColumnsInRow[firstSelectableRow].ToArray()), firstSelectableRow);
+                    break;
+            }
+        }
+        
+        // returns nearest number in array to "num"
+        int GetClosestNumber(int num, int[] candidates)
+        {
+            int smallestDistance = Math.Abs(num - candidates[0]);
+            int resultCandidate = candidates[0];
+            foreach (int candidate in candidates)
+            {
+                int distance = Math.Abs(num - candidate);
+                if (distance < smallestDistance)
+                {
+                    smallestDistance = distance;
+                    resultCandidate = candidate;
+                }
+            }
+            return resultCandidate;
         }
 
         private void HandleSelectionChange(int columnPlus, int rowPlus)
@@ -466,38 +468,33 @@ namespace Intuitive_GUI_for_Monogame.Items
                 if (columnPlus != 0)
                 {
                     for (int i = selection.X + columnPlus; i <= lastSelectableColumn && i >= firstSelectableColumn; i += columnPlus)
-                        if (selectableColumnsLocations.ContainsKey(i))
+                        if (selectableRowsInColumn.ContainsKey(i))
                         {
-                            ChangeSelection(i, selection.Y);
+                            int selectableRow = GetClosestNumber(ghostSelection.Y, selectableRowsInColumn[i].ToArray());
+                            if (GridEntries.ElementAt(gridEntryIndexByLocation[new Point(i, selectableRow)]).UIItem is Grid grid)
+                                grid.HighlightFromOutside(columnPlus > 0 ? Menu.MenuInputs.Right : Menu.MenuInputs.Left);
+                            SelectedItem.Unhighlight();
+                            ghostSelection.X = i;
+                            ChangeSelection(i, selectableRow);
+                            SelectedItem.Highlight();
                             break;
                         }
                 }
                 else if (rowPlus != 0)
                 {
                     for (int i = selection.Y + rowPlus; i <= lastSelectableRow && i >= firstSelectableRow; i += rowPlus)
-                        if (selectableRowsLocations.ContainsKey(i))
+                        if (selectableColumnsInRow.ContainsKey(i))
                         {
-                            ChangeSelection(selection.X, i);
+                            int selectableColumn = GetClosestNumber(ghostSelection.X, selectableColumnsInRow[i].ToArray());
+                            if (GridEntries.ElementAt(gridEntryIndexByLocation[new Point(selectableColumn, i)]).UIItem is Grid grid)
+                                grid.HighlightFromOutside(rowPlus > 0 ? Menu.MenuInputs.Down : Menu.MenuInputs.Up);
+                            SelectedItem.Unhighlight();
+                            ghostSelection.Y = i;
+                            ChangeSelection(selectableColumn, i);
+                            SelectedItem.Highlight();
                             break;
                         }
                 }
-            }
-
-            // returns nearest number in array to "num"
-            int GetClosestNumber(int num, int[] candidates)
-            {
-                int smallestDistance = Math.Abs(num - candidates[0]);
-                int resultCandidate = candidates[0];
-                foreach (int candidate in candidates)
-                {
-                    int distance = Math.Abs(num - candidate);
-                    if (distance < smallestDistance)
-                    {
-                        smallestDistance = distance;
-                        resultCandidate = candidate;
-                    }
-                }
-                return resultCandidate;
             }
         }
 
