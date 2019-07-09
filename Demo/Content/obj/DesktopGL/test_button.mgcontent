@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>C:/Users/Admin/source/repos/Intuitive-GUI-for-Monogame/Demo/Content/test_button.png</SourceFile>
-  <SourceTime>2018-12-30T00:00:33.6177779-08:00</SourceTime>
+  <SourceTime>2019-07-08T14:41:54.3818159-07:00</SourceTime>
   <DestFile>C:/Users/Admin/source/repos/Intuitive-GUI-for-Monogame/Demo/Content/bin/DesktopGL/test_button.xnb</DestFile>
-  <DestTime>2019-01-29T11:36:21.0622906-08:00</DestTime>
+  <DestTime>2019-07-08T14:49:41.7080503-07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T07:05:36-08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

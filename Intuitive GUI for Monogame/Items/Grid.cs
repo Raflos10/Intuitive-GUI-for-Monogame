@@ -337,7 +337,16 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
         }
 
-        public override void MouseUpdate(Vector2 mouseGlobalPosition)
+		public override bool ContainsMouse(Vector2 mouseGlobalPosition)
+		{
+			Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
+
+			if (mouseLocalPosition.X > 0 && mouseLocalPosition.Y > 0 && mouseLocalPosition.X < Width && mouseLocalPosition.Y < Height)
+				return true;
+			return false;
+		}
+
+		public override void MouseUpdate(Vector2 mouseGlobalPosition)
         {
             if (SelectableGrid)
             {
@@ -354,12 +363,12 @@ namespace Intuitive_GUI_for_Monogame.Items
                     return;
                 }
 
-                // mouse has gone outside selected space
+				// mouse has gone outside selected space
 
-                if (!ContainsMouse(mouseGlobalPosition))
-                    return;
+				if (!ContainsMouse(mouseGlobalPosition))
+					return;
 
-                Point mousePoint = selection;
+				Point mousePoint = selection;
 
                 for (int i = 0; i < columns.Length; i++)
                     if (columns[i].RightPosition >= mouseLocalPosition.X && columns[i].LeftPosition <= mouseLocalPosition.X)
@@ -374,15 +383,17 @@ namespace Intuitive_GUI_for_Monogame.Items
                         break;
                     }
 
-                if (gridEntryIndexByLocation.ContainsKey(mousePoint) && GridEntries.ElementAt(gridEntryIndexByLocation[mousePoint]).UIItem is Selectable selectable)
+                if (gridEntryIndexByLocation.ContainsKey(mousePoint) && 
+					GridEntries.ElementAt(gridEntryIndexByLocation[mousePoint]).UIItem is Selectable selectable)
                 {
-                    // if Persistant Highlight is on and the mouse isn't directly over the new selection, don't do anything yet
-                    if (PersistantHighlight && selectable.StrictBoundingBox && !selectable.ContainsMouse(mouseGlobalPosition))
-                        return;
-                    else
-                        SelectedItem.Unhighlight();
+					// if Persistant Highlight is on and the mouse isn't directly over the new selection, don't do anything yet
+					if (PersistantHighlight && selectable.StrictBoundingBox && !selectable.ContainsMouse(mouseGlobalPosition))
+						return;
+					else
+						SelectedItem.Unhighlight();
 
                     selection = mousePoint;
+					ghostSelection = selection;
 
                     if (!Highlighted)
                         Highlight();
@@ -424,21 +435,26 @@ namespace Intuitive_GUI_for_Monogame.Items
             switch (input)
             {
                 case Menu.MenuInputs.Left:
-                    selection = new Point(lastSelectableColumn, GetClosestNumber(selection.Y, selectableRowsInColumn[lastSelectableColumn].ToArray()));
+                    selection = new Point(lastSelectableColumn, 
+						GetClosestNumber(selection.Y, selectableRowsInColumn[lastSelectableColumn].ToArray()));
                     break;
 
                 case Menu.MenuInputs.Right:
-                    selection = new Point(firstSelectableColumn, GetClosestNumber(selection.Y, selectableRowsInColumn[firstSelectableColumn].ToArray()));
+                    selection = new Point(firstSelectableColumn, 
+						GetClosestNumber(selection.Y, selectableRowsInColumn[firstSelectableColumn].ToArray()));
                     break;
 
                 case Menu.MenuInputs.Up:
-                    selection = new Point(GetClosestNumber(selection.X, selectableColumnsInRow[lastSelectableRow].ToArray()), lastSelectableRow);
+                    selection = new Point(GetClosestNumber(selection.X, 
+						selectableColumnsInRow[lastSelectableRow].ToArray()), lastSelectableRow);
                     break;
 
                 case Menu.MenuInputs.Down:
-                    selection = new Point(GetClosestNumber(selection.X, selectableColumnsInRow[firstSelectableRow].ToArray()), firstSelectableRow);
+                    selection = new Point(GetClosestNumber(selection.X, 
+						selectableColumnsInRow[firstSelectableRow].ToArray()), firstSelectableRow);
                     break;
             }
+			ghostSelection = selection;
         }
         
         // returns nearest number in array to "num"
@@ -495,7 +511,7 @@ namespace Intuitive_GUI_for_Monogame.Items
                             break;
                         }
                 }
-            }
+			}
         }
 
         public override void UpdateTransformProperties(Matrix parentMatrix)

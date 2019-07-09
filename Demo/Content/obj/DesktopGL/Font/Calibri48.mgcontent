@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>C:/Users/Admin/source/repos/Intuitive-GUI-for-Monogame/Demo/Content/Font/Calibri48.fnt</SourceFile>
-  <SourceTime>2018-11-25T22:59:47.3746313-08:00</SourceTime>
+  <SourceTime>2019-07-08T14:41:54.3159581-07:00</SourceTime>
   <DestFile>C:/Users/Admin/source/repos/Intuitive-GUI-for-Monogame/Demo/Content/bin/DesktopGL/Font/Calibri48.xnb</DestFile>
-  <DestTime>2019-01-29T11:36:21.1302945-08:00</DestTime>
+  <DestTime>2019-07-08T14:49:41.7589229-07:00</DestTime>
   <Importer>BitmapFontImporter</Importer>
-  <ImporterTime>2018-05-23T11:26:24-07:00</ImporterTime>
+  <ImporterTime>2019-07-08T14:41:54.9585457-07:00</ImporterTime>
   <Processor>BitmapFontProcessor</Processor>
-  <ProcessorTime>2018-05-23T11:26:24-07:00</ProcessorTime>
+  <ProcessorTime>2019-07-08T14:41:54.9585457-07:00</ProcessorTime>
   <Dependencies />
   <BuildAsset />
   <BuildOutput />

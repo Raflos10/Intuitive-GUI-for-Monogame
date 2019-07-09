@@ -79,7 +79,7 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
         }
 
-        public bool ContainsMouse(Vector2 mouseGlobalPosition)
+        public virtual bool ContainsMouse(Vector2 mouseGlobalPosition)
         {
             Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
 
