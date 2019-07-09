@@ -6,6 +6,9 @@ This GUI is meant to be intuitive for both the developer and the user. WPF (Wind
 Another reason for the grid-based system is to help in supporting keyboard and controller support in menus. I'm proud to say that keyboard, mouse, and controller input will all work. 
 Also, the grid-based menus will move, scale, and rotate all of their items as one, so menu animations are easy. 
 I encourage anyone to clone this project and make more useful UI elements that are missing, such as radio buttons, tab windows, listboxes, and so-on. 
+```
+Created for use with Monogame 3.6
+```
 
 # Steps to Getting Started
 1. Download the latest [release](https://github.com/Raflos10/Intuitive-GUI-for-Monogame/releases) and reference it in your project.
