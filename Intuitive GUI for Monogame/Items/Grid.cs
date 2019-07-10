@@ -53,17 +53,8 @@ namespace Intuitive_GUI_for_Monogame.Items
         }
 
         public bool SelectableGrid { get; private set; }
-        private bool outOfBounds = false; // make function?
-        public bool OutOfBounds
-        {
-            get
-            {
-                bool val = outOfBounds;
-                outOfBounds = false;
-                return val;
-            }
-            private set { outOfBounds = value; }
-        }
+
+        EventHandler OutOfBoundsSelection;
 
         #endregion
 
@@ -123,6 +114,8 @@ namespace Intuitive_GUI_for_Monogame.Items
             if (selectable is Grid grid)
                 if (!grid.SelectableGrid)
                     return;
+                else
+                    grid.OutOfBoundsSelection += ReturnFromInnerGrid;
 
             // if the item is Selectable, make sure its column and row are selectable
             // also store the selectable item's location in it's specific column/row
@@ -294,6 +287,8 @@ namespace Intuitive_GUI_for_Monogame.Items
             SelectedItem?.Unhighlight();
         }
 
+        #region Selection With Mouse
+
         public override void MouseClick(Vector2 mouseGlobalPosition)
         {
             base.MouseClick(mouseGlobalPosition);
@@ -306,35 +301,6 @@ namespace Intuitive_GUI_for_Monogame.Items
             base.MouseRelease(mouseGlobalPosition);
 
             SelectedItem.MouseRelease(mouseGlobalPosition);
-        }
-
-        public override void InputTrigger(Menu.MenuInputs input)
-        {
-            if (SelectedItem is Grid grid)
-            {
-                grid.InputTrigger(input);
-                if (!grid.OutOfBounds)
-                    return;
-            }
-
-            switch (input)
-            {
-                case Menu.MenuInputs.Up:
-                    HandleSelectionChange(0, -1);
-                    break;
-                case Menu.MenuInputs.Down:
-                    HandleSelectionChange(0, 1);
-                    break;
-                case Menu.MenuInputs.Left:
-                    HandleSelectionChange(-1, 0);
-                    break;
-                case Menu.MenuInputs.Right:
-                    HandleSelectionChange(1, 0);
-                    break;
-                case Menu.MenuInputs.OK:
-                    SelectedItem.InputTrigger(input);
-                    break;
-            }
         }
 
 		public override bool ContainsMouse(Vector2 mouseGlobalPosition)
@@ -405,6 +371,8 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
         }
 
+        #endregion
+
         private void ChangeSelection(int column, int row)
         {
             Exception exception = new Exception("Tried to select a non-selectable location.");
@@ -430,33 +398,18 @@ namespace Intuitive_GUI_for_Monogame.Items
             ChangeSelection(primarySelection.X, primarySelection.Y);
         }
 
-        public void HighlightFromOutside(Menu.MenuInputs input)
+        #region Keyboard Input
+
+        public override void InputTrigger(Menu.MenuInputs input)
         {
-            switch (input)
-            {
-                case Menu.MenuInputs.Left:
-                    selection = new Point(lastSelectableColumn, 
-						GetClosestNumber(selection.Y, selectableRowsInColumn[lastSelectableColumn].ToArray()));
-                    break;
-
-                case Menu.MenuInputs.Right:
-                    selection = new Point(firstSelectableColumn, 
-						GetClosestNumber(selection.Y, selectableRowsInColumn[firstSelectableColumn].ToArray()));
-                    break;
-
-                case Menu.MenuInputs.Up:
-                    selection = new Point(GetClosestNumber(selection.X, 
-						selectableColumnsInRow[lastSelectableRow].ToArray()), lastSelectableRow);
-                    break;
-
-                case Menu.MenuInputs.Down:
-                    selection = new Point(GetClosestNumber(selection.X, 
-						selectableColumnsInRow[firstSelectableRow].ToArray()), firstSelectableRow);
-                    break;
-            }
-			ghostSelection = selection;
+            if (input == Menu.MenuInputs.OK)
+                SelectedItem.InputTrigger(input);
+            else if (SelectedItem is Grid grid)
+                grid.InputTrigger(input);
+            else
+                HandleSelectionChange(input);
         }
-        
+
         // returns nearest number in array to "num"
         int GetClosestNumber(int num, int[] candidates)
         {
@@ -474,11 +427,14 @@ namespace Intuitive_GUI_for_Monogame.Items
             return resultCandidate;
         }
 
-        private void HandleSelectionChange(int columnPlus, int rowPlus)
+        private void HandleSelectionChange(Menu.MenuInputs input)
         {
+            int columnPlus = input == Menu.MenuInputs.Left ? -1 : input == Menu.MenuInputs.Right ? 1 : 0;
+            int rowPlus = input == Menu.MenuInputs.Up ? -1 : input == Menu.MenuInputs.Down ? 1 : 0;
+
             if (selection.X + columnPlus > lastSelectableColumn || selection.Y + rowPlus > lastSelectableRow ||
                 selection.X + columnPlus < firstSelectableColumn || selection.Y + rowPlus < firstSelectableRow)
-                OutOfBounds = true;
+                OutOfBoundsSelection?.Invoke(this,new OutOfBoundsSelectionEventArgs(input));
             else
             {
                 if (columnPlus != 0)
@@ -513,6 +469,41 @@ namespace Intuitive_GUI_for_Monogame.Items
                 }
 			}
         }
+
+        void ReturnFromInnerGrid(object sender, EventArgs e)
+        {
+            if (e is OutOfBoundsSelectionEventArgs args)
+                HandleSelectionChange(args.InputDirection);
+        }
+
+        public void HighlightFromOutside(Menu.MenuInputs input)
+        {
+            switch (input)
+            {
+                case Menu.MenuInputs.Left:
+                    selection = new Point(lastSelectableColumn,
+                        GetClosestNumber(selection.Y, selectableRowsInColumn[lastSelectableColumn].ToArray()));
+                    break;
+
+                case Menu.MenuInputs.Right:
+                    selection = new Point(firstSelectableColumn,
+                        GetClosestNumber(selection.Y, selectableRowsInColumn[firstSelectableColumn].ToArray()));
+                    break;
+
+                case Menu.MenuInputs.Up:
+                    selection = new Point(GetClosestNumber(selection.X,
+                        selectableColumnsInRow[lastSelectableRow].ToArray()), lastSelectableRow);
+                    break;
+
+                case Menu.MenuInputs.Down:
+                    selection = new Point(GetClosestNumber(selection.X,
+                        selectableColumnsInRow[firstSelectableRow].ToArray()), firstSelectableRow);
+                    break;
+            }
+            ghostSelection = selection;
+        }
+
+        #endregion
 
         public override void UpdateTransformProperties(Matrix parentMatrix)
         {
@@ -637,6 +628,15 @@ namespace Intuitive_GUI_for_Monogame.Items
             this.TopPosition = topPosition;
             this.Height = height;
             this.BottomPosition = topPosition + height;
+        }
+    }
+
+    public class OutOfBoundsSelectionEventArgs : EventArgs
+    {
+        public Menu.MenuInputs InputDirection { get; private set; }
+        public OutOfBoundsSelectionEventArgs(Menu.MenuInputs inputDirection)
+        {
+            this.InputDirection = inputDirection;
         }
     }
 }
