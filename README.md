@@ -58,6 +58,13 @@ grid.BuildGrid(new ColumnDefinition(800), new RowDefinition(600));
 To center something inside a grid, it's easiest right now to have two empty columns/rows set as "fill". This way they fill evenly on either side of the item. 
 Grids can be added to grids, so you can make some fairly complex menus. 
 
+## Input
+Using the mouse is supported by default, just by adding the menusystem component to your game components. To use alternative input methods such as keyboard and gamepad, use the InputTrigger method in your menusystem instance along with the Menu.MenuInput enum.  
+Example:
+```
+menuSystem.InputTrigger(Menu.MenuInput.Left);
+```
+
 # Dependencies
 Other than Monogame itself, there are no mandatory dependencies. 
 ### Optional
