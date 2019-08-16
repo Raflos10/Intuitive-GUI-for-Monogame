@@ -40,17 +40,16 @@ namespace Intuitive_GUI_for_Monogame
                 mouseState = Mouse.GetState();
 
                 if (menus.Count > 0 && mouseStateLast != mouseState)
-                    foreach (Menu menu in menus)
-                        menu.MouseUpdate(mouseState, mouseStateLast, GetVirtualPosition(mouseState.Position.ToVector2()));
+                    for (int i = 0; i < menus.Count; i++)
+                        menus[i].MouseUpdate(mouseState, mouseStateLast, GetVirtualPosition(mouseState.Position.ToVector2()));
             }
         }
 
         public void InputTrigger(Menu.MenuInputs input)
         {
             if (KeyboardInputEnabled)
-                foreach (Menu menu in menus)
-                    if (menu.Active)
-                        menu.InputTrigger(input);
+                for (int i = 0; i < menus.Count; i++)
+                    menus[i].InputTrigger(input);
         }
 
         Vector2 GetVirtualPosition(Vector2 position)
@@ -76,7 +75,7 @@ namespace Intuitive_GUI_for_Monogame
 
             if (menus.Count > 0)
             {
-                spriteBatch.Begin(transformMatrix: ResolutionMatrix);
+                spriteBatch.Begin();
                 foreach (Menu menu in menus)
                     menu.Draw(spriteBatch, gameTime);
                 spriteBatch.End();

@@ -30,7 +30,7 @@ namespace Intuitive_GUI_for_Monogame.Items
             get { return state; }
             set
             {
-                OnStateChange?.Invoke(this, new ButtonStateChangedEventArgs(state,value));
+                OnStateChange?.Invoke(this, new ButtonStateChangedEventArgs(state, value));
                 state = value;
             }
         }
@@ -39,30 +39,10 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public Button()
         {
-            OnHighlight += Button_OnHighlight;
-            OnUnhighlight += Button_OnUnhighlight;
-            OnMouseClick += Button_OnPress;
-            OnMouseRelease += Button_OnRelease;
-        }
-
-        private void Button_OnHighlight(object sender, EventArgs e)
-        {
-            State = ButtonState.Highlighted;
-        }
-
-        private void Button_OnUnhighlight(object sender, EventArgs e)
-        {
-            State = ButtonState.None;
-        }
-
-        private void Button_OnPress(object sender, EventArgs e)
-        {
-            State = ButtonState.Pressed;
-        }
-
-        private void Button_OnRelease(object sender, EventArgs e)
-        {
-            State = ButtonState.Released;
+            OnHighlight += (sender, args) => State = ButtonState.Highlighted;
+            OnUnhighlight += (sender, args) => State = ButtonState.None;
+            OnMouseClick += (sender, args) => State = ButtonState.Pressed;
+            OnMouseRelease += (sender, args) => State = ButtonState.Released;
         }
     }
 

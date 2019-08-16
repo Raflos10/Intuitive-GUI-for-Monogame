@@ -23,8 +23,17 @@ namespace Intuitive_GUI_for_Monogame.Items
             this.Margin = margin ?? Margin.Zero;
             this.SourceRectangle = sourceRectangle ?? null;
 
-            Width = texture.Width;
-            Height = texture.Height;
+            if(SourceRectangle != null)
+            {
+                Rectangle rectangle = (Rectangle)SourceRectangle;
+                Width = rectangle.Width;
+                Height = rectangle.Height;
+            }
+            else
+            {
+                Width = texture.Width;
+                Height = texture.Height;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

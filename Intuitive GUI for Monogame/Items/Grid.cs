@@ -318,7 +318,7 @@ namespace Intuitive_GUI_for_Monogame.Items
             {
                 base.MouseUpdate(mouseGlobalPosition);
 
-                Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition) + new Vector2(Margin.Left, Margin.Top);
+                Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
 
                 // mouse has not gone outside selected space
                 if (columns[selection.X].LeftPosition <= mouseLocalPosition.X && columns[selection.X].RightPosition >= mouseLocalPosition.X &&
@@ -392,8 +392,16 @@ namespace Intuitive_GUI_for_Monogame.Items
         public override void ResetSelection()
         {
             foreach (GridEntry gridEntry in GridEntries)
-                if (gridEntry.UIItem is Selectable selectable)
-                    selectable.ResetSelection();
+                switch (gridEntry.UIItem)
+                {
+                    case Grid grid:
+                        grid.ResetSelection();
+                        break;
+
+                    case Selectable selectable:
+                        selectable.Unhighlight();
+                        break;
+                }
 
             ChangeSelection(primarySelection.X, primarySelection.Y);
         }

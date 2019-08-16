@@ -85,10 +85,10 @@ namespace Intuitive_GUI_for_Monogame.Items
 
             if (StrictBoundingBox)
             {
-                if (mouseLocalPosition.X > 0 && mouseLocalPosition.Y > 0 && mouseLocalPosition.X < Width && mouseLocalPosition.Y < Height)
+                if (mouseLocalPosition.X >= 0 && mouseLocalPosition.Y >= 0 && mouseLocalPosition.X <= Width && mouseLocalPosition.Y <= Height)
                     return true;
             }
-            else if (mouseLocalPosition.X > 0 && mouseLocalPosition.Y > 0 && mouseLocalPosition.X < BoundingWidth && mouseLocalPosition.Y < BoundingHeight)
+            else if (mouseLocalPosition.X >= -Margin.Left && mouseLocalPosition.Y >= -Margin.Top && mouseLocalPosition.X <= BoundingWidth && mouseLocalPosition.Y <= BoundingHeight)
                 return true;
 
             return false;
@@ -96,7 +96,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         protected Vector2 GetMouseLocalPosition(Vector2 mouseGlobalPosition)
         {
-            return Vector2.Transform(mouseGlobalPosition, Matrix.Invert(ParentMatrix)) - new Vector2(Margin.Left, Margin.Top);
+            return Vector2.Transform(mouseGlobalPosition, Matrix.Invert(ParentMatrix));
         }
 
         public virtual void MouseUpdate(Vector2 mouseGlobalPosition)

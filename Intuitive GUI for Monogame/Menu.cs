@@ -100,14 +100,13 @@ namespace Intuitive_GUI_for_Monogame
 
         protected Matrix Transform { get; private set; }
 
+        public bool Active { get; set; } = true;
+
         public EventHandler Open, Close;
 
-        public enum MenuInputs { Up, Down, Left, Right, OK, Cancel, Pause }
+        private Menu childMenu;
 
-        /// <summary>
-        /// If false, the menu will still be visible but not interactable.
-        /// </summary>
-        public bool Active { get; set; } = true;
+        public enum MenuInputs { Up, Down, Left, Right, OK, Cancel, Pause }
 
         /// <summary>
         /// Determines whether this menu's (selectable) item should be highlighted by default.
@@ -147,24 +146,30 @@ namespace Intuitive_GUI_for_Monogame
 
         public virtual void InputTrigger(MenuInputs input)
         {
-            if (Item is Items.Selectable selectable)
+            if (Active)
             {
-                if (usingMouse)
-                    usingMouse = false;
-
-                if (!HighlightedByDefault && !selectable.Highlighted)
+                if (Item is Items.Selectable selectable)
                 {
-                    selectable.Highlight();
-                    return;
-                }
+                    if (usingMouse)
+                        usingMouse = false;
 
-                selectable.InputTrigger(input);
+                    if (!HighlightedByDefault && !selectable.Highlighted)
+                    {
+                        selectable.Highlight();
+                        return;
+                    }
+
+                    selectable.InputTrigger(input);
+                }
             }
+            else
+                childMenu.InputTrigger(input);
         }
 
-        public void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 mouseGlobalPosition)
+        public virtual void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 mouseGlobalPosition)
         {
             if (Active)
+            {
                 if (Item is Items.Selectable selectable)
                 {
                     if (!usingMouse)
@@ -177,7 +182,23 @@ namespace Intuitive_GUI_for_Monogame
                     else if (mouseState.LeftButton == ButtonState.Released && mouseStateLast.LeftButton == ButtonState.Pressed)
                         selectable.MouseRelease(mouseGlobalPosition);
                 }
+            }
+            else
+                childMenu.MouseUpdate(mouseState, mouseStateLast, mouseGlobalPosition);
+        }
 
+        public void OpenChildMenu(Menu menu)
+        {
+            Active = false;
+            childMenu = menu;
+            menu.Open?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void CloseChildMenu()
+        {
+            Active = true;
+            childMenu.Close?.Invoke(this, EventArgs.Empty);
+            childMenu = null;
         }
 
         void UpdateTransform()
@@ -193,6 +214,8 @@ namespace Intuitive_GUI_for_Monogame
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Item?.Draw(spriteBatch, gameTime);
+
+            childMenu?.Draw(spriteBatch, gameTime);
         }
     }
 }
