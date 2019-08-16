@@ -23,7 +23,7 @@ namespace Intuitive_GUI_for_Monogame.Items
             this.Margin = margin ?? Margin.Zero;
             this.SourceRectangle = sourceRectangle ?? null;
 
-            if(SourceRectangle != null)
+            if (SourceRectangle != null)
             {
                 Rectangle rectangle = (Rectangle)SourceRectangle;
                 Width = rectangle.Width;
@@ -38,7 +38,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.Draw(Texture, Position, SourceRectangle, Color, Rotation, Origin, Scale, SpriteEffect, LayerDepth);
+            spriteBatch.Draw(Texture, Position + GetMarginOffset(), SourceRectangle, Color, Rotation, Origin, Scale, SpriteEffect, LayerDepth);
         }
     }
 }

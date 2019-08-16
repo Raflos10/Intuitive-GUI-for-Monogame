@@ -25,7 +25,7 @@ namespace Intuitive_GUI_for_Monogame.Items
         /// If true, the element will only highlight when the mouse is directly over it. 
         /// <para>If false, the element will highlight as long as the mouse is inside its territory. </para>
         /// </summary>
-        public bool StrictBoundingBox { get; set; } = false;
+        public bool StrictBoundingBox { get; set; } = true;
 
         /// <summary>
         /// Determines whether the action should be invoked on mouse press or mouse release.
@@ -90,10 +90,12 @@ namespace Intuitive_GUI_for_Monogame.Items
 
             if (StrictBoundingBox)
             {
-                if (mouseLocalPosition.X >= 0 && mouseLocalPosition.Y >= 0 && mouseLocalPosition.X <= Width && mouseLocalPosition.Y <= Height)
+                if (mouseLocalPosition.X >= Margin.Left && mouseLocalPosition.Y >= Margin.Top &&
+                    mouseLocalPosition.X <= Width + Margin.Left && mouseLocalPosition.Y <= Height + Margin.Top)
                     return true;
             }
-            else if (mouseLocalPosition.X >= -Margin.Left && mouseLocalPosition.Y >= -Margin.Top && mouseLocalPosition.X <= BoundingWidth && mouseLocalPosition.Y <= BoundingHeight)
+            else if (mouseLocalPosition.X >= 0 && mouseLocalPosition.Y >= 0 &&
+                mouseLocalPosition.X <= BoundingWidth && mouseLocalPosition.Y <= BoundingHeight)
                 return true;
 
             return false;

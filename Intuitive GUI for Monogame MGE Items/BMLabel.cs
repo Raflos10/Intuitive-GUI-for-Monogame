@@ -42,7 +42,7 @@ namespace Intuitive_GUI_for_Monogame_MGE_Items
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.DrawString(Font, Text, Position, Color, Rotation, Origin, Scale, SpriteEffect, LayerDepth);
+            spriteBatch.DrawString(Font, Text, Position + GetMarginOffset(), Color, Rotation, Origin, Scale, SpriteEffect, LayerDepth);
         }
     }
 }

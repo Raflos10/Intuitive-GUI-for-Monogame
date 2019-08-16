@@ -23,6 +23,7 @@ namespace Intuitive_GUI_for_Monogame.Items
         protected float Rotation { get; private set; }
         protected Matrix ParentMatrix { get; private set; }
         public Margin Margin { get; set; } = Margin.Zero;
+        protected Vector2 GetMarginOffset() { return new Vector2(Margin.Left, Margin.Top); }
 
         public virtual void UpdateTransformProperties(Matrix parentMatrix)
         {

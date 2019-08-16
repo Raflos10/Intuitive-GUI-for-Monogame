@@ -46,7 +46,7 @@ namespace Intuitive_GUI_for_Monogame.Items
         private readonly Dictionary<int, List<int>> selectableColumnsInRow = new Dictionary<int, List<int>>();
         private int firstSelectableColumn, firstSelectableRow, lastSelectableColumn, lastSelectableRow;
 
-        private Point selection, primarySelection, ghostSelection; 
+        private Point selection, primarySelection, ghostSelection;
         public Selectable SelectedItem
         {
             get { return (Selectable)GridEntries.ElementAt(gridEntryIndexByLocation[new Point(selection.X, selection.Y)]).UIItem; }
@@ -303,16 +303,7 @@ namespace Intuitive_GUI_for_Monogame.Items
             SelectedItem.MouseRelease(mouseGlobalPosition);
         }
 
-		public override bool ContainsMouse(Vector2 mouseGlobalPosition)
-		{
-			Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
-
-			if (mouseLocalPosition.X > 0 && mouseLocalPosition.Y > 0 && mouseLocalPosition.X < Width && mouseLocalPosition.Y < Height)
-				return true;
-			return false;
-		}
-
-		public override void MouseUpdate(Vector2 mouseGlobalPosition)
+        public override void MouseUpdate(Vector2 mouseGlobalPosition)
         {
             if (SelectableGrid)
             {
@@ -329,12 +320,12 @@ namespace Intuitive_GUI_for_Monogame.Items
                     return;
                 }
 
-				// mouse has gone outside selected space
+                // mouse has gone outside selected space
 
-				if (!ContainsMouse(mouseGlobalPosition))
-					return;
+                if (!ContainsMouse(mouseGlobalPosition))
+                    return;
 
-				Point mousePoint = selection;
+                Point mousePoint = selection;
 
                 for (int i = 0; i < columns.Length; i++)
                     if (columns[i].RightPosition >= mouseLocalPosition.X && columns[i].LeftPosition <= mouseLocalPosition.X)
@@ -349,17 +340,17 @@ namespace Intuitive_GUI_for_Monogame.Items
                         break;
                     }
 
-                if (gridEntryIndexByLocation.ContainsKey(mousePoint) && 
-					GridEntries.ElementAt(gridEntryIndexByLocation[mousePoint]).UIItem is Selectable selectable)
+                if (gridEntryIndexByLocation.ContainsKey(mousePoint) &&
+                    GridEntries.ElementAt(gridEntryIndexByLocation[mousePoint]).UIItem is Selectable selectable)
                 {
-					// if Persistant Highlight is on and the mouse isn't directly over the new selection, don't do anything yet
-					if (PersistantHighlight && selectable.StrictBoundingBox && !selectable.ContainsMouse(mouseGlobalPosition))
-						return;
-					else
-						SelectedItem.Unhighlight();
+                    // if Persistant Highlight is on and the mouse isn't directly over the new selection, don't do anything yet
+                    if (PersistantHighlight && selectable.StrictBoundingBox && !selectable.ContainsMouse(mouseGlobalPosition))
+                        return;
+                    else
+                        SelectedItem.Unhighlight();
 
                     selection = mousePoint;
-					ghostSelection = selection;
+                    ghostSelection = selection;
 
                     if (!Highlighted)
                         Highlight();
@@ -442,7 +433,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 
             if (selection.X + columnPlus > lastSelectableColumn || selection.Y + rowPlus > lastSelectableRow ||
                 selection.X + columnPlus < firstSelectableColumn || selection.Y + rowPlus < firstSelectableRow)
-                OutOfBoundsSelection?.Invoke(this,new OutOfBoundsSelectionEventArgs(input));
+                OutOfBoundsSelection?.Invoke(this, new OutOfBoundsSelectionEventArgs(input));
             else
             {
                 if (columnPlus != 0)
@@ -475,7 +466,7 @@ namespace Intuitive_GUI_for_Monogame.Items
                             break;
                         }
                 }
-			}
+            }
         }
 
         void ReturnFromInnerGrid(object sender, EventArgs e)
@@ -519,8 +510,8 @@ namespace Intuitive_GUI_for_Monogame.Items
 
             for (int i = 0; i < GridEntries.Count; i++)
             {
-                int x = columns[_gridEntries[i].Column].LeftPosition + GridEntries.ElementAt(i).UIItem.Margin.Left;
-                int y = rows[_gridEntries[i].Row].TopPosition + GridEntries.ElementAt(i).UIItem.Margin.Top;
+                int x = columns[_gridEntries[i].Column].LeftPosition;
+                int y = rows[_gridEntries[i].Row].TopPosition;
                 Matrix transform = Matrix.CreateTranslation(x, y, 0f) * parentMatrix;
                 _gridEntries[i].UIItem.UpdateTransformProperties(transform);
             }

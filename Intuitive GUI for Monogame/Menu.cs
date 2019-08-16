@@ -89,7 +89,7 @@ namespace Intuitive_GUI_for_Monogame
             set
             {
                 item = value;
-                item.UpdateBounding(new Items.Column(0, Width), new Items.Row(0, height));
+                item.UpdateBounding(new Items.Column(0, Width), new Items.Row(0, Height));
                 if (item is Items.Grid grid)
                     grid.BuildGrid(new Items.ColumnDefinition(Width), new Items.RowDefinition(Height));
                 UpdateTransform();
