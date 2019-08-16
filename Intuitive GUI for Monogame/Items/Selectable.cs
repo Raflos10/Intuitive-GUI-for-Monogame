@@ -34,7 +34,8 @@ namespace Intuitive_GUI_for_Monogame.Items
         /// </summary>
         public bool ActionOnRelease { get; set; } = false;
 
-        public EventHandler OnHighlight, OnUnhighlight, OnMouseClick, OnMouseRelease, OnButtonTrigger, Action;
+        public EventHandler OnHighlight, OnUnhighlight, OnMouseClick, OnMouseRelease, OnButtonTrigger, Action, OnMouseClickOutside,
+            OnMouseReleaseOutside;
 
         public EventArgs Args { get; set; }
 
@@ -58,6 +59,8 @@ namespace Intuitive_GUI_for_Monogame.Items
                 if (!ActionOnRelease)
                     Action?.Invoke(this, Args);
             }
+            else
+                OnMouseClickOutside?.Invoke(this, Args);
         }
 
         public virtual void MouseRelease(Vector2 mouseGlobalPosition)
@@ -68,6 +71,8 @@ namespace Intuitive_GUI_for_Monogame.Items
                 if (ActionOnRelease)
                     Action?.Invoke(this, Args);
             }
+            else
+                OnMouseReleaseOutside?.Invoke(this, Args);
         }
 
         public virtual void InputTrigger(Menu.MenuInputs input)
