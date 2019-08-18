@@ -14,7 +14,7 @@ using Intuitive_GUI_for_Monogame.Items;
 
 namespace Intuitive_GUI_for_Monogame_MGE_Items
 {
-    public class Label : UIElement
+    public class BMLabel : UIElement
     {
         public BitmapFont Font { get; set; }
         public string Text { get; set; }
@@ -22,12 +22,12 @@ namespace Intuitive_GUI_for_Monogame_MGE_Items
         public SpriteEffects SpriteEffect { get; set; } = SpriteEffects.None;
         public float LayerDepth { get; set; }
 
-        public Label(BitmapFont font, string text, Margin margin = null)
+        public BMLabel(BitmapFont font, string text, Margin margin = null)
         {
             NewLabel(font, text, Color.Black, margin);
         }
 
-        public Label(BitmapFont font, string text, Color color, Margin margin = null)
+        public BMLabel(BitmapFont font, string text, Color color, Margin margin = null)
         {
             NewLabel(font, text, color, margin);
         }
@@ -38,6 +38,9 @@ namespace Intuitive_GUI_for_Monogame_MGE_Items
             this.Text = text;
             this.Color = color;
             this.Margin = margin ?? Margin.Zero;
+
+            Width = (int)font.MeasureString(text).Width;
+            Height = (int)font.MeasureString(text).Height;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

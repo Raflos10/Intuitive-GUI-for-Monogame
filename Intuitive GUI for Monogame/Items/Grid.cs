@@ -47,6 +47,7 @@ namespace Intuitive_GUI_for_Monogame.Items
         private int firstSelectableColumn, firstSelectableRow, lastSelectableColumn, lastSelectableRow;
 
         private Point selection, primarySelection, ghostSelection;
+        private bool primarySelectionSpecified;
         public Selectable SelectedItem
         {
             get { return (Selectable)GridEntries.ElementAt(gridEntryIndexByLocation[new Point(selection.X, selection.Y)]).UIItem; }
@@ -82,6 +83,7 @@ namespace Intuitive_GUI_for_Monogame.Items
         {
             this.Margin = margin ?? Margin.Zero;
             this.primarySelection = primarySelection;
+            primarySelectionSpecified = true;
         }
 
         public void AddColumnDefinition(ColumnDefinition columnDefinition)
@@ -142,7 +144,8 @@ namespace Intuitive_GUI_for_Monogame.Items
             if (!SelectableGrid)
             {
                 // the first added selectable child is the default selected
-                primarySelection = new Point(column, row);
+                if (!primarySelectionSpecified)
+                    primarySelection = new Point(column, row);
                 selection = primarySelection;
                 ghostSelection = primarySelection;
                 OnHighlight += HighlightThis;
@@ -151,14 +154,12 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
         }
 
-        public void BuildGrid(ColumnDefinition containerColumnDefinition, RowDefinition containerRowDefinition)
+        public void BuildGrid(int containerWidth, int containerHeight)
         {
-            if (containerColumnDefinition.DefinitionType == ColumnDefinition.DefinitionTypes.Fixed)
-                Width = containerColumnDefinition.Width - Margin.Left - Margin.Right;
+            Width = containerWidth - Margin.Left - Margin.Right;
+            Height = containerHeight - Margin.Top - Margin.Bottom;
 
-            if (containerRowDefinition.DefinitionType == RowDefinition.DefinitionTypes.Fixed)
-                Height = containerRowDefinition.Height - Margin.Top - Margin.Bottom;
-
+            // this grid's
             int[] columnWidths, rowHeights;
 
             #region Columns
@@ -182,8 +183,13 @@ namespace Intuitive_GUI_for_Monogame.Items
                         foreach (GridEntry gridEntry in GridEntries)
                             if (gridEntry.Column == i)
                             {
+                                // there is no way for a grid to be built without a fixed size, so change it to fill
+                                //TODO BuildGridVariableSize(out int width, out int height) returns a total width and height, fill columns/rows become zero
                                 if (gridEntry.UIItem is Grid grid)
-                                    grid.BuildGrid(_columnDefinitions[gridEntry.Column], _rowDefinitions[gridEntry.Row]);
+                                {
+                                    starColumns.Add(i);
+                                    continue;
+                                }
                                 int widthAndMargin = gridEntry.UIItem.Width + gridEntry.UIItem.Margin.Left + gridEntry.UIItem.Margin.Right;
                                 if (widthAndMargin > largest)
                                     largest = widthAndMargin;
@@ -198,14 +204,9 @@ namespace Intuitive_GUI_for_Monogame.Items
                 }
             }
 
-            if (containerColumnDefinition.DefinitionType == ColumnDefinition.DefinitionTypes.Fixed)
-            {
-                int starWidth = starColumns.Count > 0 ? (Width - totalWidth) / starColumns.Count : 0;
-                for (int i = 0; i < starColumns.Count; i++)
-                    columnWidths[starColumns[i]] = starWidth;
-            }
-            else
-                Width = totalWidth - Margin.Left - Margin.Right;
+            int starWidth = starColumns.Count > 0 ? (Width - totalWidth) / starColumns.Count : 0;
+            for (int i = 0; i < starColumns.Count; i++)
+                columnWidths[starColumns[i]] = starWidth;
 
             totalWidth = 0;
             columns = new Column[columnWidths.Length];
@@ -238,8 +239,13 @@ namespace Intuitive_GUI_for_Monogame.Items
                         foreach (GridEntry gridEntry in GridEntries)
                             if (gridEntry.Row == i)
                             {
+                                // there is no way for a grid to be built without a fixed size, so change it to fill
+                                //TODO BuildGridVariableSize(out int width, out int height) returns a total width and height, fill columns/rows become zero
                                 if (gridEntry.UIItem is Grid grid)
-                                    grid.BuildGrid(_columnDefinitions[gridEntry.Column], _rowDefinitions[gridEntry.Row]);
+                                {
+                                    starRows.Add(i);
+                                    continue;
+                                }
                                 int heightAndMargin = gridEntry.UIItem.Height + gridEntry.UIItem.Margin.Top + gridEntry.UIItem.Margin.Bottom;
                                 if (heightAndMargin > largest)
                                     largest = heightAndMargin;
@@ -254,14 +260,9 @@ namespace Intuitive_GUI_for_Monogame.Items
                 }
             }
 
-            if (containerRowDefinition.DefinitionType == RowDefinition.DefinitionTypes.Fixed)
-            {
-                int starHeight = starRows.Count > 0 ? (Height - totalHeight) / starRows.Count : 0;
-                for (int i = 0; i < starRows.Count; i++)
-                    rowHeights[starRows[i]] = starHeight;
-            }
-            else
-                Height = totalHeight - Margin.Top - Margin.Bottom;
+            int starHeight = starRows.Count > 0 ? (Height - totalHeight) / starRows.Count : 0;
+            for (int i = 0; i < starRows.Count; i++)
+                rowHeights[starRows[i]] = starHeight;
 
             totalHeight = 0;
             rows = new Row[rowHeights.Length];
@@ -274,7 +275,11 @@ namespace Intuitive_GUI_for_Monogame.Items
             #endregion
 
             foreach (GridEntry gridEntry in GridEntries)
+            {
                 gridEntry.UIItem.UpdateBounding(columns[gridEntry.Column], rows[gridEntry.Row]);
+                if (gridEntry.UIItem is Grid grid)
+                    grid.BuildGrid(columns[gridEntry.Column].Width, rows[gridEntry.Row].Height);
+            }
         }
 
         void HighlightThis(object sender, EventArgs e)
@@ -291,16 +296,22 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public override void MouseClick(Vector2 mouseGlobalPosition)
         {
-            base.MouseClick(mouseGlobalPosition);
+            if (SelectableGrid)
+            {
+                base.MouseClick(mouseGlobalPosition);
 
-            SelectedItem.MouseClick(mouseGlobalPosition);
+                SelectedItem.MouseClick(mouseGlobalPosition);
+            }
         }
 
         public override void MouseRelease(Vector2 mouseGlobalPosition)
         {
-            base.MouseRelease(mouseGlobalPosition);
+            if (SelectableGrid)
+            {
+                base.MouseRelease(mouseGlobalPosition);
 
-            SelectedItem.MouseRelease(mouseGlobalPosition);
+                SelectedItem.MouseRelease(mouseGlobalPosition);
+            }
         }
 
         public override void MouseUpdate(Vector2 mouseGlobalPosition)
@@ -382,31 +393,37 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public override void ResetSelection()
         {
-            foreach (GridEntry gridEntry in GridEntries)
-                switch (gridEntry.UIItem)
-                {
-                    case Grid grid:
-                        grid.ResetSelection();
-                        break;
+            if (SelectableGrid)
+            {
+                foreach (GridEntry gridEntry in GridEntries)
+                    switch (gridEntry.UIItem)
+                    {
+                        case Grid grid:
+                            grid.ResetSelection();
+                            break;
 
-                    case Selectable selectable:
-                        selectable.Unhighlight();
-                        break;
-                }
+                        case Selectable selectable:
+                            selectable.Unhighlight();
+                            break;
+                    }
 
-            ChangeSelection(primarySelection.X, primarySelection.Y);
+                ChangeSelection(primarySelection.X, primarySelection.Y);
+            }
         }
 
         #region Keyboard Input
 
         public override void InputTrigger(Menu.MenuInputs input)
         {
-            if (input == Menu.MenuInputs.OK)
-                SelectedItem.InputTrigger(input);
-            else if (SelectedItem is Grid grid)
-                grid.InputTrigger(input);
-            else
-                HandleSelectionChange(input);
+            if (SelectableGrid)
+            {
+                if (input == Menu.MenuInputs.OK)
+                    SelectedItem.InputTrigger(input);
+                else if (SelectedItem is Grid grid)
+                    grid.InputTrigger(input);
+                else
+                    HandleSelectionChange(input);
+            }
         }
 
         // returns nearest number in array to "num"
