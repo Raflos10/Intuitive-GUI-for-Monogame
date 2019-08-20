@@ -296,22 +296,18 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public override void MouseClick(Vector2 mouseGlobalPosition)
         {
-            if (SelectableGrid)
-            {
-                base.MouseClick(mouseGlobalPosition);
+            base.MouseClick(mouseGlobalPosition);
 
+            if (SelectableGrid)
                 SelectedItem.MouseClick(mouseGlobalPosition);
-            }
         }
 
         public override void MouseRelease(Vector2 mouseGlobalPosition)
         {
-            if (SelectableGrid)
-            {
-                base.MouseRelease(mouseGlobalPosition);
+            base.MouseRelease(mouseGlobalPosition);
 
+            if (SelectableGrid)
                 SelectedItem.MouseRelease(mouseGlobalPosition);
-            }
         }
 
         public override void MouseUpdate(Vector2 mouseGlobalPosition)

@@ -104,7 +104,7 @@ namespace Intuitive_GUI_for_Monogame
 
         public EventHandler Open, Close;
 
-        private Menu childMenu;
+        protected Menu childMenu;
 
         public enum MenuInputs { Up, Down, Left, Right, OK, Cancel, Pause }
 
