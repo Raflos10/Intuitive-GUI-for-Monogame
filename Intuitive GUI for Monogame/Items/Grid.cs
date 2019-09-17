@@ -159,6 +159,9 @@ namespace Intuitive_GUI_for_Monogame.Items
             primarySelection = location;
         }
 
+        public EventHandler debugEvent;
+        public int debug;
+
         public void BuildGrid(int containerWidth, int containerHeight)
         {
             Width = containerWidth - Margin.Left - Margin.Right;
@@ -192,7 +195,8 @@ namespace Intuitive_GUI_for_Monogame.Items
                                 //TODO BuildGridVariableSize(out int width, out int height) returns a total width and height, fill columns/rows become zero
                                 if (gridEntry.UIItem is Grid grid)
                                 {
-                                    starColumns.Add(i);
+                                    if (!starColumns.Contains(i))
+                                        starColumns.Add(i);
                                     continue;
                                 }
                                 int widthAndMargin = gridEntry.UIItem.Width + gridEntry.UIItem.Margin.Left + gridEntry.UIItem.Margin.Right;
@@ -248,7 +252,8 @@ namespace Intuitive_GUI_for_Monogame.Items
                                 //TODO BuildGridVariableSize(out int width, out int height) returns a total width and height, fill columns/rows become zero
                                 if (gridEntry.UIItem is Grid grid)
                                 {
-                                    starRows.Add(i);
+                                    if (!starRows.Contains(i))
+                                        starRows.Add(i);
                                     continue;
                                 }
                                 int heightAndMargin = gridEntry.UIItem.Height + gridEntry.UIItem.Margin.Top + gridEntry.UIItem.Margin.Bottom;
