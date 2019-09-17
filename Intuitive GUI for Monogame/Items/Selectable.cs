@@ -86,9 +86,14 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public virtual bool ContainsMouse(Vector2 mouseGlobalPosition)
         {
+            return ContainsMouse(mouseGlobalPosition, StrictBoundingBox);
+        }
+
+        public bool ContainsMouse(Vector2 mouseGlobalPosition, bool strictBoundingBox)
+        {
             Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
 
-            if (StrictBoundingBox)
+            if (strictBoundingBox)
             {
                 if (mouseLocalPosition.X >= Margin.Left && mouseLocalPosition.Y >= Margin.Top &&
                     mouseLocalPosition.X <= Width + Margin.Left && mouseLocalPosition.Y <= Height + Margin.Top)
@@ -108,13 +113,20 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public virtual void MouseUpdate(Vector2 mouseGlobalPosition)
         {
+            bool containsMouse = ContainsMouse(mouseGlobalPosition);
             if (!Highlighted)
             {
-                if (ContainsMouse(mouseGlobalPosition))
+                if (containsMouse)
+                {
                     Highlight();
+                    Debug.WriteLine("base hl");
+                }
             }
-            else if (!PersistantHighlight && !ContainsMouse(mouseGlobalPosition))
+            else if (!PersistantHighlight && !containsMouse)
+            {
                 Unhighlight();
+                Debug.WriteLine("base uh");
+            }
         }
 
         public virtual void ResetSelection() { }

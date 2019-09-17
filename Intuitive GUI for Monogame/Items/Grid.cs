@@ -327,7 +327,7 @@ namespace Intuitive_GUI_for_Monogame.Items
                     return;
                 }
 
-                // mouse has gone outside selected space
+                // mouse is currently outside selected space
 
                 if (!ContainsMouse(mouseGlobalPosition))
                     return;
@@ -347,13 +347,14 @@ namespace Intuitive_GUI_for_Monogame.Items
                         break;
                     }
 
+                // if mouse is over a selectable region
                 if (gridEntryIndexByLocation.ContainsKey(mousePoint) &&
                     GridEntries.ElementAt(gridEntryIndexByLocation[mousePoint]).UIItem is Selectable selectable)
                 {
                     // if Persistant Highlight is on and the mouse isn't directly over the new selection, don't do anything yet
                     if (PersistantHighlight && selectable.StrictBoundingBox && !selectable.ContainsMouse(mouseGlobalPosition))
                         return;
-                    else
+                    else if (SelectedItem.Highlighted)
                         SelectedItem.Unhighlight();
 
                     selection = mousePoint;
@@ -364,7 +365,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 
                     SelectedItem.MouseUpdate(mouseGlobalPosition);
                 }
-                else if (!PersistantHighlight)
+                else if (!PersistantHighlight && SelectedItem.Highlighted)
                     SelectedItem.Unhighlight();
             }
         }
