@@ -154,6 +154,11 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
         }
 
+        public void ChangePrimarySelection(Point location)
+        {
+            primarySelection = location;
+        }
+
         public void BuildGrid(int containerWidth, int containerHeight)
         {
             Width = containerWidth - Margin.Left - Margin.Right;

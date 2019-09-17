@@ -117,16 +117,10 @@ namespace Intuitive_GUI_for_Monogame.Items
             if (!Highlighted)
             {
                 if (containsMouse)
-                {
                     Highlight();
-                    Debug.WriteLine("base hl");
-                }
             }
             else if (!PersistantHighlight && !containsMouse)
-            {
                 Unhighlight();
-                Debug.WriteLine("base uh");
-            }
         }
 
         public virtual void ResetSelection() { }
