@@ -19,6 +19,7 @@ namespace Intuitive_GUI_for_Monogame
 
         public Matrix ResolutionMatrix { get; set; } = Matrix.Identity;
         private SpriteBatch spriteBatch;
+        public SamplerState SamplerState { get; set; }
         private List<Menu> menus = new List<Menu>();
 
         private MouseState mouseState, mouseStateLast;
@@ -75,7 +76,7 @@ namespace Intuitive_GUI_for_Monogame
 
             if (menus.Count > 0)
             {
-                spriteBatch.Begin();
+                spriteBatch.Begin(samplerState: SamplerState);
                 foreach (Menu menu in menus)
                     menu.Draw(spriteBatch, gameTime);
                 spriteBatch.End();

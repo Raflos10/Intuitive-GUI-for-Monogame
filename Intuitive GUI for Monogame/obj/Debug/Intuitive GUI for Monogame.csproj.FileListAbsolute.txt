@@ -37,3 +37,28 @@ C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogam
 C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\MonoGame.Framework.xml
 C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\Newtonsoft.Json.xml
 C:\Users\Admin\source\repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\obj\Debug\Intuitive GUI for Monogame.csproj.CopyComplete
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\Intuitive GUI for Monogame.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\Intuitive GUI for Monogame.pdb
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\MonoGame.Framework.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\Newtonsoft.Json.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\MonoGame.Framework.xml
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\Newtonsoft.Json.xml
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\obj\Debug\Intuitive GUI for Monogame.csprojAssemblyReference.cache
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\obj\Debug\Intuitive GUI for Monogame.csproj.CopyComplete
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\obj\Debug\Intuitive GUI for Monogame.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\obj\Debug\Intuitive GUI for Monogame.pdb
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\MonoGame.Extended.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.XAudio2.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.DXGI.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.Direct3D11.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.Direct2D1.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.XInput.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.MediaFoundation.dll
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.XAudio2.xml
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.xml
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.DXGI.xml
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.Direct3D11.xml
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.Direct2D1.xml
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.XInput.xml
+C:\Users\user1\Source\Repos\Intuitive-GUI-for-Monogame\Intuitive GUI for Monogame\bin\Debug\SharpDX.MediaFoundation.xml
