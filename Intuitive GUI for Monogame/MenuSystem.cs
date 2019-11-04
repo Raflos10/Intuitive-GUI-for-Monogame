@@ -19,7 +19,16 @@ namespace Intuitive_GUI_for_Monogame
 
         public Matrix ResolutionMatrix { get; set; } = Matrix.Identity;
         private SpriteBatch spriteBatch;
-        public SamplerState SamplerState { get; set; }
+
+        // graphics properties
+        public SpriteSortMode SpriteSortMode { get; set; } = SpriteSortMode.Deferred;
+        public BlendState BlendState { get; set; } = BlendState.AlphaBlend;
+        public SamplerState SamplerState { get; set; } = SamplerState.LinearClamp;
+        public DepthStencilState DepthStencilState { get; set; } = DepthStencilState.None;
+        public RasterizerState RasterizerState { get; set; } = RasterizerState.CullCounterClockwise;
+        public Effect Effect { get; set; }
+
+
         private List<Menu> menus = new List<Menu>();
 
         private MouseState mouseState, mouseStateLast;
@@ -76,7 +85,7 @@ namespace Intuitive_GUI_for_Monogame
 
             if (menus.Count > 0)
             {
-                spriteBatch.Begin(samplerState: SamplerState);
+                spriteBatch.Begin(SpriteSortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Effect, null);
                 foreach (Menu menu in menus)
                     menu.Draw(spriteBatch, gameTime);
                 spriteBatch.End();
