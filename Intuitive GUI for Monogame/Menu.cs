@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Intuitive_GUI_for_Monogame.Items;
 
 namespace Intuitive_GUI_for_Monogame
 {
@@ -151,7 +152,10 @@ namespace Intuitive_GUI_for_Monogame
                 if (Item is Items.Selectable selectable)
                 {
                     if (usingMouse)
+                    {
+                        selectable.OnSwitchInputMethod?.Invoke(this, EventArgs.Empty);
                         usingMouse = false;
+                    }
 
                     if (!HighlightedByDefault && !selectable.Highlighted)
                     {
@@ -173,7 +177,10 @@ namespace Intuitive_GUI_for_Monogame
                 if (Item is Items.Selectable selectable)
                 {
                     if (!usingMouse)
+                    {
+                        selectable.OnSwitchInputMethod?.Invoke(this, EventArgs.Empty);
                         usingMouse = true;
+                    }
 
                     selectable.MouseUpdate(mouseGlobalPosition);
 

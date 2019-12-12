@@ -35,7 +35,7 @@ namespace Intuitive_GUI_for_Monogame.Items
         public bool ActionOnRelease { get; set; } = false;
 
         public EventHandler OnHighlight, OnUnhighlight, OnMouseClick, OnMouseRelease, OnButtonTrigger, Action, OnMouseClickOutside,
-            OnMouseReleaseOutside;
+            OnMouseReleaseOutside, OnSwitchInputMethod;
 
         public EventArgs Args { get; set; }
 
