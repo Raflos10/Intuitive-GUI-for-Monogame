@@ -13,216 +13,223 @@ using Intuitive_GUI_for_Monogame.Items;
 
 namespace Intuitive_GUI_for_Monogame
 {
-    public abstract class Menu
-    {
-        #region Properties that update the matrix
+	public abstract class Menu
+	{
+		#region Properties that update the matrix
 
-        private Vector2 position;
-        public Vector2 Position
-        {
-            get { return position; }
-            set
-            {
-                position = value;
-                UpdateTransform();
-            }
-        }
+		private Vector2 position;
+		public Vector2 Position
+		{
+			get { return position; }
+			set
+			{
+				position = value;
+				UpdateTransform();
+			}
+		}
 
-        private int width;
-        public int Width
-        {
-            get { return width; }
-            set
-            {
-                width = value;
-                UpdateTransform();
-            }
-        }
+		private int width;
+		public int Width
+		{
+			get { return width; }
+			set
+			{
+				width = value;
+				UpdateTransform();
+			}
+		}
 
-        private int height;
-        public int Height
-        {
-            get { return height; }
-            set
-            {
-                height = value;
-                UpdateTransform();
-            }
-        }
+		private int height;
+		public int Height
+		{
+			get { return height; }
+			set
+			{
+				height = value;
+				UpdateTransform();
+			}
+		}
 
-        private Vector2 scale = Vector2.One;
-        public Vector2 Scale
-        {
-            get { return scale; }
-            set
-            {
-                scale = value;
-                UpdateTransform();
-            }
-        }
+		private Vector2 scale = Vector2.One;
+		public Vector2 Scale
+		{
+			get { return scale; }
+			set
+			{
+				scale = value;
+				UpdateTransform();
+			}
+		}
 
-        private Vector2 origin = Vector2.Zero;
-        public Vector2 Origin
-        {
-            get { return origin; }
-            set
-            {
-                origin = value;
-                UpdateTransform();
-            }
-        }
+		private Vector2 origin = Vector2.Zero;
+		public Vector2 Origin
+		{
+			get { return origin; }
+			set
+			{
+				origin = value;
+				UpdateTransform();
+			}
+		}
 
-        private float rotation = 0;
-        public float Rotation
-        {
-            get { return rotation; }
-            set
-            {
-                rotation = value;
-                UpdateTransform();
-            }
-        }
+		private float rotation = 0;
+		public float Rotation
+		{
+			get { return rotation; }
+			set
+			{
+				rotation = value;
+				UpdateTransform();
+			}
+		}
 
-        private Items.UIElement item;
-        public Items.UIElement Item
-        {
-            get { return item; }
-            set
-            {
-                item = value;
-                item.UpdateBounding(new Items.Column(0, Width), new Items.Row(0, Height));
-                if (item is Items.Grid grid)
-                    grid.BuildGrid(Width, Height);
-                UpdateTransform();
-            }
-        }
+		private Items.UIElement item;
+		public Items.UIElement Item
+		{
+			get { return item; }
+			set
+			{
+				item = value;
+				item.UpdateBounding(new Items.Column(0, Width), new Items.Row(0, Height));
+				if (item is Items.Grid grid)
+					grid.BuildGrid(Width, Height);
+				UpdateTransform();
+			}
+		}
 
-        #endregion
+		#endregion
 
-        protected Matrix Transform { get; private set; }
+		protected Matrix Transform { get; private set; }
 
-        public bool Active { get; set; } = true;
+		public bool Active { get; set; } = true;
 
-        public EventHandler Open, Close;
+		public EventHandler Open, Close;
 
-        protected Menu childMenu;
+		protected Menu childMenu;
 
-        public enum MenuInputs { Up, Down, Left, Right, OK, Cancel, Pause }
+		public enum MenuInputs { Up, Down, Left, Right, OK, Cancel, Pause }
 
-        /// <summary>
-        /// Determines whether this menu's (selectable) item should be highlighted by default.
-        /// If not, it will take one InputTrigger to highlight it.
-        /// </summary>
-        public bool HighlightedByDefault { get; set; } = true;
+		/// <summary>
+		/// Determines whether this menu's (selectable) item should be highlighted by default.
+		/// If not, it will take one InputTrigger to highlight it.
+		/// </summary>
+		public bool HighlightedByDefault { get; set; } = true;
 
-        private bool usingMouse = false;
+		private bool usingMouse = false;
 
-        public Menu()
-        {
-            Open += HighlightIfDefault;
-            Close += ResetSelection;
-        }
+		public Menu()
+		{
+			Open += HighlightIfDefault;
+			Open += (sender, args) => usingMouse = !HighlightedByDefault;
+			Close += ResetSelection;
+		}
 
-        public Menu(bool rememberSelection)
-        {
-            if (!rememberSelection)
-                Close += ResetSelection;
-            Open += HighlightIfDefault;
-        }
+		public Menu(bool rememberSelection)
+		{
+			if (!rememberSelection)
+				Close += ResetSelection;
+			Open += HighlightIfDefault;
+			Open += (sender, args) => usingMouse = !HighlightedByDefault;
+		}
 
-        void HighlightIfDefault(object sender, EventArgs e)
-        {
-            if (HighlightedByDefault && item is Items.Selectable selectable)
-                selectable.Highlight();
-        }
+		void HighlightIfDefault(object sender, EventArgs e)
+		{
+			if (HighlightedByDefault && item is Items.Selectable selectable)
+				if (selectable is Grid grid)
+					grid.HighlightInternal();
+				else
+					selectable.Highlight();
+		}
 
-        void ResetSelection(object sender, EventArgs e)
-        {
-            if (Item != null && Item is Items.Selectable selectable)
-                if (HighlightedByDefault)
-                    selectable.ResetSelection();
-                else
-                    selectable.Unhighlight();
-        }
+		void ResetSelection(object sender, EventArgs e)
+		{
+			if (Item != null && Item is Items.Selectable selectable)
+			{
+				if (HighlightedByDefault)
+					selectable.ResetSelection();
+				else
+					selectable.Unhighlight();
+			}
+		}
 
-        public virtual void InputTrigger(MenuInputs input)
-        {
-            if (Active)
-            {
-                if (Item is Items.Selectable selectable)
-                {
-                    if (usingMouse)
-                    {
-                        selectable.OnSwitchInputMethod?.Invoke(this, EventArgs.Empty);
-                        usingMouse = false;
-                    }
+		public virtual void InputTrigger(MenuInputs input)
+		{
+			if (Active)
+			{
+				if (Item is Items.Selectable selectable)
+				{
+					if (usingMouse)
+					{
+						selectable.OnSwitchInputMethod?.Invoke(this, EventArgs.Empty);
+						usingMouse = false;
+					}
 
-                    if (!HighlightedByDefault && !selectable.Highlighted)
-                    {
-                        selectable.Highlight();
-                        return;
-                    }
+					if (!HighlightedByDefault && !selectable.Highlighted)
+					{
+						selectable.Highlight();
+						return;
+					}
 
-                    selectable.InputTrigger(input);
-                }
-            }
-            else
-                childMenu.InputTrigger(input);
-        }
+					selectable.InputTrigger(input);
+				}
+			}
+			else
+				childMenu.InputTrigger(input);
+		}
 
-        public virtual void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 mouseGlobalPosition)
-        {
-            if (Active)
-            {
-                if (Item is Items.Selectable selectable)
-                {
-                    if (!usingMouse)
-                    {
-                        selectable.OnSwitchInputMethod?.Invoke(this, EventArgs.Empty);
-                        usingMouse = true;
-                    }
+		public virtual void MouseUpdate(MouseState mouseState, MouseState mouseStateLast, Vector2 mouseGlobalPosition)
+		{
+			if (Active)
+			{
+				if (Item is Items.Selectable selectable)
+				{
+					if (!usingMouse)
+					{
+						selectable.OnSwitchInputMethod?.Invoke(this, EventArgs.Empty);
+						usingMouse = true;
+					}
 
-                    selectable.MouseUpdate(mouseGlobalPosition);
+					selectable.MouseUpdate(mouseGlobalPosition);
 
-                    if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
-                        selectable.MouseClick(mouseGlobalPosition);
-                    else if (mouseState.LeftButton == ButtonState.Released && mouseStateLast.LeftButton == ButtonState.Pressed)
-                        selectable.MouseRelease(mouseGlobalPosition);
-                }
-            }
-            else
-                childMenu.MouseUpdate(mouseState, mouseStateLast, mouseGlobalPosition);
-        }
+					if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
+						selectable.MouseClick(mouseGlobalPosition);
+					else if (mouseState.LeftButton == ButtonState.Released && mouseStateLast.LeftButton == ButtonState.Pressed)
+						selectable.MouseRelease(mouseGlobalPosition);
+				}
+			}
+			else
+				childMenu.MouseUpdate(mouseState, mouseStateLast, mouseGlobalPosition);
+		}
 
-        public void OpenChildMenu(Menu menu)
-        {
-            Active = false;
-            childMenu = menu;
-            menu.Open?.Invoke(this, EventArgs.Empty);
-        }
+		public void OpenChildMenu(Menu menu)
+		{
+			Active = false;
+			childMenu = menu;
+			menu.Open?.Invoke(this, EventArgs.Empty);
+		}
 
-        public void CloseChildMenu()
-        {
-            Active = true;
-            childMenu.Close?.Invoke(this, EventArgs.Empty);
-            childMenu = null;
-        }
+		public void CloseChildMenu()
+		{
+			Active = true;
+			childMenu.Close?.Invoke(this, EventArgs.Empty);
+			childMenu = null;
+		}
 
-        void UpdateTransform()
-        {
-            //Transform = -Origin * Scale * Rotation * Translation
-            Transform = Matrix.CreateTranslation(-Origin.X, -Origin.Y, 0f) *
-                Matrix.CreateScale(Scale.X, Scale.Y, 1f) *
-                Matrix.CreateRotationZ(Rotation) *
-                Matrix.CreateTranslation(Position.X, Position.Y, 0f);
-            Item?.UpdateTransformProperties(Transform);
-        }
+		void UpdateTransform()
+		{
+			//Transform = -Origin * Scale * Rotation * Translation
+			Transform = Matrix.CreateTranslation(-Origin.X, -Origin.Y, 0f) *
+				Matrix.CreateScale(Scale.X, Scale.Y, 1f) *
+				Matrix.CreateRotationZ(Rotation) *
+				Matrix.CreateTranslation(Position.X, Position.Y, 0f);
+			Item?.UpdateTransformProperties(Transform);
+		}
 
-        public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            Item?.Draw(spriteBatch, gameTime);
+		public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+		{
+			Item?.Draw(spriteBatch, gameTime);
 
-            childMenu?.Draw(spriteBatch, gameTime);
-        }
-    }
+			childMenu?.Draw(spriteBatch, gameTime);
+		}
+	}
 }

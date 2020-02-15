@@ -155,9 +155,10 @@ namespace Intuitive_GUI_for_Monogame.Items
 			}
 		}
 
-		public void ChangePrimarySelection(Point location)
+		public void ChangePrimarySelection(int x, int y)
 		{
-			primarySelection = location;
+			primarySelection = new Point(x, y);
+			primarySelectionSpecified = true;
 		}
 
 		public EventHandler debugEvent;
@@ -432,6 +433,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 			{
 				UnhighlightAll();
 				ChangeSelection(primarySelection.X, primarySelection.Y);
+				HighlightInternal();
 			}
 		}
 
