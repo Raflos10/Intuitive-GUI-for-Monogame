@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Items\UIContainer.cs" />
     <Compile Include="MenuSystem.cs" />
     <Compile Include="Items\Button.cs" />
     <Compile Include="Items\Grid.cs" />

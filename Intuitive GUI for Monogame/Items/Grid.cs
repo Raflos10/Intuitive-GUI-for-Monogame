@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Intuitive_GUI_for_Monogame.Items
 {
-	public class Grid : Selectable
+	public class Grid : UIContainer
 	{
 		#region Read-Only Lists
 
