@@ -28,7 +28,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 		}
 
 		private List<GridEntry> _gridEntries = new List<GridEntry>();
-		public IReadOnlyCollection<GridEntry> GridEntries
+		public override IReadOnlyCollection<ContainerEntry> Children
 		{
 			get { return _gridEntries.AsReadOnly(); }
 		}
@@ -48,14 +48,10 @@ namespace Intuitive_GUI_for_Monogame.Items
 
 		private Point selection, primarySelection, ghostSelection;
 		private bool primarySelectionSpecified;
-		public Selectable SelectedItem
+		public override Selectable SelectedElement
 		{
-			get { return (Selectable)GridEntries.ElementAt(gridEntryIndexByLocation[new Point(selection.X, selection.Y)]).UIItem; }
+			get { return (Selectable)Children.ElementAt(gridEntryIndexByLocation[new Point(selection.X, selection.Y)]).Element; }
 		}
-
-		public bool SelectableGrid { get; private set; }
-
-		EventHandler OutOfBoundsSelection;
 
 		#endregion
 
@@ -82,7 +78,12 @@ namespace Intuitive_GUI_for_Monogame.Items
 		public Grid(Point primarySelection, Margin margin = null)
 		{
 			this.Margin = margin ?? Margin.Zero;
-			this.primarySelection = primarySelection;
+			ChangePrimarySelection(primarySelection.X, primarySelection.Y);
+		}
+
+		public void ChangePrimarySelection(int x, int y)
+		{
+			this.primarySelection = new Point(x, y);
 			primarySelectionSpecified = true;
 		}
 
@@ -96,28 +97,26 @@ namespace Intuitive_GUI_for_Monogame.Items
 			_rowDefinitions.Add(rowDefinition);
 		}
 
-		public void AddChild(UIElement uiItem, int column, int row)
+		public void AddChild(UIElement Element, int column, int row)
 		{
 			if (column >= ColumnDefinitions.Count)
 				throw new Exception("Column index out of bounds.");
 			if (row >= RowDefinitions.Count)
 				throw new Exception("Row index out of bounds.");
 
-			_gridEntries.Add(new GridEntry(uiItem, column, row));
-			gridEntryIndexByLocation.Add(new Point(column, row), GridEntries.Count - 1);
+			_gridEntries.Add(new GridEntry(Element, column, row));
+			gridEntryIndexByLocation.Add(new Point(column, row), Children.Count - 1);
 
-			if (uiItem is Selectable selectable)
+			if (Element is Selectable selectable)
 				AddSelectable(selectable, column, row);
 		}
 
 		void AddSelectable(Selectable selectable, int column, int row)
 		{
-			// make sure it's not a grid with nothing selectable inside
-			if (selectable is Grid grid)
-				if (!grid.SelectableGrid)
+			// make sure it's not a container with nothing selectable inside
+			if (selectable is UIContainer container)
+				if (!container.IsSelectable)
 					return;
-				else
-					grid.OutOfBoundsSelection += ReturnFromInnerGrid;
 
 			// if the item is Selectable, make sure its column and row are selectable
 			// also store the selectable item's location in it's specific column/row
@@ -141,28 +140,17 @@ namespace Intuitive_GUI_for_Monogame.Items
 			}
 			selectableColumnsInRow[row].Add(column);
 
-			if (!SelectableGrid)
+			if (!IsSelectable)
 			{
 				// the first added selectable child is the default selected
 				if (!primarySelectionSpecified)
 					primarySelection = new Point(column, row);
 				selection = primarySelection;
 				ghostSelection = primarySelection;
-				//OnHighlight += HighlightChild;
-				//OnUnhighlight += UnhighlightChild;
-				OnSwitchInputMethod += (sender, args) => UnhighlightInternal();
-				SelectableGrid = true;
+				OnSwitchInputMethod += (sender, args) => Unhighlight();
+				IsSelectable = true;
 			}
 		}
-
-		public void ChangePrimarySelection(int x, int y)
-		{
-			primarySelection = new Point(x, y);
-			primarySelectionSpecified = true;
-		}
-
-		public EventHandler debugEvent;
-		public int debug;
 
 		public void BuildGrid(int containerWidth, int containerHeight)
 		{
@@ -190,18 +178,18 @@ namespace Intuitive_GUI_for_Monogame.Items
 
 					case ColumnDefinition.DefinitionTypes.Auto:
 						int largest = 0;
-						foreach (GridEntry gridEntry in GridEntries)
+						foreach (GridEntry gridEntry in Children)
 							if (gridEntry.Column == i)
 							{
 								// there is no way for a grid to be built without a fixed size, so change it to fill
 								//TODO BuildGridVariableSize(out int width, out int height) returns a total width and height, fill columns/rows become zero
-								if (gridEntry.UIItem is Grid grid)
+								if (gridEntry.Element is Grid grid)
 								{
 									if (!starColumns.Contains(i))
 										starColumns.Add(i);
 									continue;
 								}
-								int widthAndMargin = gridEntry.UIItem.Width + gridEntry.UIItem.Margin.Left + gridEntry.UIItem.Margin.Right;
+								int widthAndMargin = gridEntry.Element.Width + gridEntry.Element.Margin.Left + gridEntry.Element.Margin.Right;
 								if (widthAndMargin > largest)
 									largest = widthAndMargin;
 							}
@@ -247,18 +235,18 @@ namespace Intuitive_GUI_for_Monogame.Items
 
 					case RowDefinition.DefinitionTypes.Auto:
 						int largest = 0;
-						foreach (GridEntry gridEntry in GridEntries)
+						foreach (GridEntry gridEntry in Children)
 							if (gridEntry.Row == i)
 							{
 								// there is no way for a grid to be built without a fixed size, so change it to fill
 								//TODO BuildGridVariableSize(out int width, out int height) returns a total width and height, fill columns/rows become zero
-								if (gridEntry.UIItem is Grid grid)
+								if (gridEntry.Element is Grid grid)
 								{
 									if (!starRows.Contains(i))
 										starRows.Add(i);
 									continue;
 								}
-								int heightAndMargin = gridEntry.UIItem.Height + gridEntry.UIItem.Margin.Top + gridEntry.UIItem.Margin.Bottom;
+								int heightAndMargin = gridEntry.Element.Height + gridEntry.Element.Margin.Top + gridEntry.Element.Margin.Bottom;
 								if (heightAndMargin > largest)
 									largest = heightAndMargin;
 							}
@@ -286,92 +274,31 @@ namespace Intuitive_GUI_for_Monogame.Items
 
 			#endregion
 
-			foreach (GridEntry gridEntry in GridEntries)
+			foreach (GridEntry gridEntry in Children)
 			{
-				gridEntry.UIItem.UpdateBounding(columns[gridEntry.Column], rows[gridEntry.Row]);
-				if (gridEntry.UIItem is Grid grid)
+				gridEntry.Element.UpdateBounding(columns[gridEntry.Column], rows[gridEntry.Row]);
+				if (gridEntry.Element is Grid grid)
 					grid.BuildGrid(columns[gridEntry.Column].Width, rows[gridEntry.Row].Height);
 			}
 		}
 
-		public void HighlightInternal()
-		{
-			if (SelectedItem is Grid grid)
-				grid.HighlightInternal();
-			else
-				SelectedItem?.Highlight();
-			Highlight();
-		}
-
-		public void UnhighlightInternal()
-		{
-			if (SelectedItem is Grid grid)
-				grid.UnhighlightInternal();
-			else
-				SelectedItem?.Unhighlight();
-			Unhighlight();
-		}
-
-		void UnhighlightAll()
-		{
-			foreach (GridEntry gridEntry in GridEntries)
-				switch (gridEntry.UIItem)
-				{
-					case Grid grid:
-						grid.ResetSelection();
-						break;
-
-					case Selectable selectable:
-						selectable.Unhighlight();
-						break;
-				}
-		}
-
 		#region Selection With Mouse
-
-		public override void MouseClick(Vector2 mouseGlobalPosition)
-		{
-			base.MouseClick(mouseGlobalPosition);
-
-			if (SelectableGrid)
-				SelectedItem.MouseClick(mouseGlobalPosition);
-		}
-
-		public override void MouseRelease(Vector2 mouseGlobalPosition)
-		{
-			base.MouseRelease(mouseGlobalPosition);
-
-			if (SelectableGrid)
-				SelectedItem.MouseRelease(mouseGlobalPosition);
-		}
 
 		public override void MouseUpdate(Vector2 mouseGlobalPosition)
 		{
-			if (SelectableGrid)
+			if (IsSelectable)
 			{
-				//base.MouseUpdate(mouseGlobalPosition);
+				// mouse has not gone outside selected space
+				if (SelectedElement.ContainsMouse(mouseGlobalPosition))
+					return;
 
 				Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
 
-				// mouse has not gone outside selected space
-				if (columns[selection.X].LeftPosition <= mouseLocalPosition.X && columns[selection.X].RightPosition >= mouseLocalPosition.X &&
-					rows[selection.Y].TopPosition <= mouseLocalPosition.Y && rows[selection.Y].BottomPosition >= mouseLocalPosition.Y)
-				{
-					SelectedItem.MouseUpdate(mouseGlobalPosition);
-
-					return;
-				}
-
 				// mouse is currently outside selected space
-
-				if (!ContainsMouse(mouseGlobalPosition))
-				{
-					UnhighlightInternal();
-					return;
-				}
 
 				Point mousePoint = selection;
 
+				// get new space where the mouse is
 				for (int i = 0; i < columns.Length; i++)
 					if (columns[i].RightPosition >= mouseLocalPosition.X && columns[i].LeftPosition <= mouseLocalPosition.X)
 					{
@@ -387,25 +314,25 @@ namespace Intuitive_GUI_for_Monogame.Items
 
 				// if mouse is over a selectable region
 				if (gridEntryIndexByLocation.ContainsKey(mousePoint) &&
-					GridEntries.ElementAt(gridEntryIndexByLocation[mousePoint]).UIItem is Selectable selectable)
+					Children.ElementAt(gridEntryIndexByLocation[mousePoint]).Element is Selectable selectable)
 				{
-					// if it's not a selectable grid, don't do anything yet
-					if (selectable is Grid grid && !grid.SelectableGrid)
+					// if it's not a selectable container, don't do anything yet
+					if (selectable is UIContainer container && !container.IsSelectable)
 						return;
 
 					// if Persistant Highlight is on and the mouse isn't directly over the new selection, don't do anything yet
 					if (PersistantHighlight && selectable.StrictBoundingBox && !selectable.ContainsMouse(mouseGlobalPosition))
 						return;
-					else if (SelectedItem.Highlighted)
-						SelectedItem.Unhighlight();
+					else if (SelectedElement.Highlighted)
+						SelectedElement.Unhighlight();
 
 					selection = mousePoint;
 					ghostSelection = selection;
 
-					SelectedItem.MouseUpdate(mouseGlobalPosition);
+					//SelectedElement.MouseUpdate(mouseGlobalPosition);
 				}
-				else if (!PersistantHighlight && SelectedItem.Highlighted)
-					SelectedItem.Unhighlight();
+				else if (!PersistantHighlight && SelectedElement.Highlighted)
+					SelectedElement.Unhighlight();
 			}
 		}
 
@@ -418,7 +345,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 			Point location = new Point(column, row);
 			if (gridEntryIndexByLocation.ContainsKey(location))
 			{
-				if (GridEntries.ElementAt(gridEntryIndexByLocation[location]).UIItem is Selectable selectable)
+				if (Children.ElementAt(gridEntryIndexByLocation[location]).Element is Selectable)
 					selection = location;
 				else
 					throw exception;
@@ -429,11 +356,10 @@ namespace Intuitive_GUI_for_Monogame.Items
 
 		public override void ResetSelection()
 		{
-			if (SelectableGrid)
+			if (IsSelectable)
 			{
 				UnhighlightAll();
 				ChangeSelection(primarySelection.X, primarySelection.Y);
-				HighlightInternal();
 			}
 		}
 
@@ -441,84 +367,62 @@ namespace Intuitive_GUI_for_Monogame.Items
 
 		public override void InputTrigger(Menu.MenuInputs input)
 		{
-			if (SelectableGrid)
+			if (IsSelectable)
 			{
 				if (input == Menu.MenuInputs.OK)
-					SelectedItem.InputTrigger(input);
-				else if (SelectedItem is Grid grid)
-					grid.InputTrigger(input);
+					SelectedElement.InputTrigger(input);
 				else
 					HandleSelectionChange(input);
 			}
 		}
 
-		// returns nearest number in array to "num"
-		int GetClosestNumber(int num, int[] candidates)
+		public override bool HandleSelectionChange(Menu.MenuInputs input)
 		{
-			int smallestDistance = Math.Abs(num - candidates[0]);
-			int resultCandidate = candidates[0];
-			foreach (int candidate in candidates)
-			{
-				int distance = Math.Abs(num - candidate);
-				if (distance < smallestDistance)
-				{
-					smallestDistance = distance;
-					resultCandidate = candidate;
-				}
-			}
-			return resultCandidate;
-		}
+			if (SelectedElement is UIContainer container)
+				if (container.HandleSelectionChange(input))
+					return true;
 
-		private void HandleSelectionChange(Menu.MenuInputs input)
-		{
 			int columnPlus = input == Menu.MenuInputs.Left ? -1 : input == Menu.MenuInputs.Right ? 1 : 0;
 			int rowPlus = input == Menu.MenuInputs.Up ? -1 : input == Menu.MenuInputs.Down ? 1 : 0;
 
 			if (selection.X + columnPlus > lastSelectableColumn || selection.Y + rowPlus > lastSelectableRow ||
 				selection.X + columnPlus < firstSelectableColumn || selection.Y + rowPlus < firstSelectableRow)
-				OutOfBoundsSelection?.Invoke(this, new OutOfBoundsSelectionEventArgs(input));
-			else
+				return false;
+
+			if (columnPlus != 0)
 			{
-				if (columnPlus != 0)
-				{
-					for (int i = selection.X + columnPlus; i <= lastSelectableColumn && i >= firstSelectableColumn; i += columnPlus)
-						if (selectableRowsInColumn.ContainsKey(i))
-						{
-							int selectableRow = GetClosestNumber(ghostSelection.Y, selectableRowsInColumn[i].ToArray());
-							if (GridEntries.ElementAt(gridEntryIndexByLocation[new Point(i, selectableRow)]).UIItem is Grid grid)
-								grid.EnterFromOutside(columnPlus > 0 ? Menu.MenuInputs.Right : Menu.MenuInputs.Left);
-							UnhighlightInternal();
-							ghostSelection.X = i;
-							ChangeSelection(i, selectableRow);
-							HighlightInternal();
-							break;
-						}
-				}
-				else if (rowPlus != 0)
-				{
-					for (int i = selection.Y + rowPlus; i <= lastSelectableRow && i >= firstSelectableRow; i += rowPlus)
-						if (selectableColumnsInRow.ContainsKey(i))
-						{
-							int selectableColumn = GetClosestNumber(ghostSelection.X, selectableColumnsInRow[i].ToArray());
-							if (GridEntries.ElementAt(gridEntryIndexByLocation[new Point(selectableColumn, i)]).UIItem is Grid grid)
-								grid.EnterFromOutside(rowPlus > 0 ? Menu.MenuInputs.Down : Menu.MenuInputs.Up);
-							UnhighlightInternal();
-							ghostSelection.Y = i;
-							ChangeSelection(selectableColumn, i);
-							HighlightInternal();
-							break;
-						}
-				}
+				for (int i = selection.X + columnPlus; i <= lastSelectableColumn && i >= firstSelectableColumn; i += columnPlus)
+					if (selectableRowsInColumn.ContainsKey(i))
+					{
+						int selectableRow = GetClosestNumber(ghostSelection.Y, selectableRowsInColumn[i].ToArray());
+						Unhighlight();
+						ghostSelection.X = i;
+						ChangeSelection(i, selectableRow);
+						if (Children.ElementAt(gridEntryIndexByLocation[new Point(i, selectableRow)]).Element is UIContainer container1)
+							container1.HighlightFromOutside(input);
+						Highlight();
+						break;
+					}
 			}
+			else if (rowPlus != 0)
+			{
+				for (int i = selection.Y + rowPlus; i <= lastSelectableRow && i >= firstSelectableRow; i += rowPlus)
+					if (selectableColumnsInRow.ContainsKey(i))
+					{
+						int selectableColumn = GetClosestNumber(ghostSelection.X, selectableColumnsInRow[i].ToArray());
+						if (Children.ElementAt(gridEntryIndexByLocation[new Point(selectableColumn, i)]).Element is UIContainer container1)
+							container1.HighlightFromOutside(input);
+						Unhighlight();
+						ghostSelection.Y = i;
+						ChangeSelection(selectableColumn, i);
+						Highlight();
+						break;
+					}
+			}
+			return true;
 		}
 
-		void ReturnFromInnerGrid(object sender, EventArgs e)
-		{
-			if (e is OutOfBoundsSelectionEventArgs args)
-				HandleSelectionChange(args.InputDirection);
-		}
-
-		public void EnterFromOutside(Menu.MenuInputs input)
+		public override void HighlightFromOutside(Menu.MenuInputs input)
 		{
 			switch (input)
 			{
@@ -551,31 +455,29 @@ namespace Intuitive_GUI_for_Monogame.Items
 		{
 			base.UpdateTransformProperties(parentMatrix);
 
-			for (int i = 0; i < GridEntries.Count; i++)
+			for (int i = 0; i < Children.Count; i++)
 			{
 				int x = columns[_gridEntries[i].Column].LeftPosition;
 				int y = rows[_gridEntries[i].Row].TopPosition;
 				Matrix transform = Matrix.CreateTranslation(x, y, 0f) * parentMatrix;
-				_gridEntries[i].UIItem.UpdateTransformProperties(transform);
+				_gridEntries[i].Element.UpdateTransformProperties(transform);
 			}
 		}
 
 		public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
 		{
-			for (int i = 0; i < GridEntries.Count; i++)
-				_gridEntries[i].UIItem?.Draw(spriteBatch, gameTime);
+			for (int i = 0; i < Children.Count; i++)
+				_gridEntries[i].Element?.Draw(spriteBatch, gameTime);
 		}
 	}
 
-	public class GridEntry
+	public class GridEntry : ContainerEntry
 	{
-		public UIElement UIItem { get; private set; }
 		public int Column { get; private set; }
 		public int Row { get; private set; }
 
-		public GridEntry(UIElement uiItem, int column, int row)
+		public GridEntry(UIElement element, int column, int row) : base(element)
 		{
-			this.UIItem = uiItem;
 			this.Column = column;
 			this.Row = row;
 		}

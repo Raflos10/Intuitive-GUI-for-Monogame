@@ -135,10 +135,7 @@ namespace Intuitive_GUI_for_Monogame
 		void HighlightIfDefault(object sender, EventArgs e)
 		{
 			if (HighlightedByDefault && item is Items.Selectable selectable)
-				if (selectable is Grid grid)
-					grid.HighlightInternal();
-				else
-					selectable.Highlight();
+				selectable.Highlight();
 		}
 
 		void ResetSelection(object sender, EventArgs e)
@@ -189,7 +186,15 @@ namespace Intuitive_GUI_for_Monogame
 						usingMouse = true;
 					}
 
-					selectable.MouseUpdate(mouseGlobalPosition);
+					if (selectable.ContainsMouse(mouseGlobalPosition))
+					{
+						if (!selectable.Highlighted)
+							selectable.Highlight();
+						if (selectable is UIContainer container)
+							container.MouseUpdate(mouseGlobalPosition);
+					}
+					else if (selectable.Highlighted && !selectable.PersistantHighlight)
+						selectable.Unhighlight();
 
 					if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
 						selectable.MouseClick(mouseGlobalPosition);
