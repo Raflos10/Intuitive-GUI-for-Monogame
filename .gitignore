@@ -4,3 +4,5 @@
 
 /.vs/Intuitive GUI for Monogame
 /.vs
+/Demo/bin/
+/Demo/obj/
