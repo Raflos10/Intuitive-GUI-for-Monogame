@@ -14,7 +14,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 {
     public abstract class UIContainer : Selectable
     {
-        public abstract IReadOnlyCollection<ContainerEntry> Children { get; }
+        public abstract IReadOnlyCollection<UIElement> Children { get; }
         public abstract Selectable SelectedElement { get; }
         public bool IsSelectable { get; protected set; } = false;
 
@@ -34,11 +34,12 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public virtual void UnhighlightAll()
         {
-            foreach (ContainerEntry entry in Children)
-                switch (entry.Element)
+            foreach (UIElement entry in Children)
+                switch (entry)
                 {
                     case UIContainer container:
                         container.ResetSelection();
+                        container.UnhighlightAll();
                         break;
 
                     case Selectable selectable:
@@ -84,15 +85,6 @@ namespace Intuitive_GUI_for_Monogame.Items
         }
 
         public abstract void MouseUpdate(Vector2 mouseGlobalPosition);
-    }
-
-    public class ContainerEntry
-    {
-        public UIElement Element { get; }
-        public ContainerEntry(UIElement element)
-        {
-            this.Element = element;
-        }
     }
 
     public class Definition

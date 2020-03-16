@@ -37,10 +37,10 @@ namespace Intuitive_GUI_for_Monogame.Items
             Scale = new Vector2(scale3.X, scale3.Y);
         }
 
-        public void UpdateBounding(Column column,Row row)
+        public void UpdateBounding(Segment column, Segment row)
         {
-            BoundingWidth = column.Width;
-            BoundingHeight = row.Height;
+            BoundingWidth = column.Length;
+            BoundingHeight = row.Length;
         }
 
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
