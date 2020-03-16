@@ -85,7 +85,7 @@ namespace Intuitive_GUI_for_Monogame
 
             if (menus.Count > 0)
             {
-                spriteBatch.Begin(SpriteSortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Effect, null);
+                spriteBatch.Begin(SpriteSortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Effect, ResolutionMatrix);
                 foreach (Menu menu in menus)
                     menu.Draw(spriteBatch, gameTime);
                 spriteBatch.End();
