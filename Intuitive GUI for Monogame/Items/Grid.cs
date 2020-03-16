@@ -16,13 +16,13 @@ namespace Intuitive_GUI_for_Monogame.Items
 	{
 		#region Read-Only Lists
 
-		private List<ColumnDefinition> _columnDefinitions = new List<ColumnDefinition>();
-		public IReadOnlyCollection<ColumnDefinition> ColumnDefinitions
+		private List<Definition> _columnDefinitions = new List<Definition>();
+		public IReadOnlyCollection<Definition> ColumnDefinitions
 		{
 			get { return _columnDefinitions.AsReadOnly(); }
 		}
-		private List<RowDefinition> _rowDefinitions = new List<RowDefinition>();
-		public IReadOnlyCollection<RowDefinition> RowDefinitions
+		private List<Definition> _rowDefinitions = new List<Definition>();
+		public IReadOnlyCollection<Definition> RowDefinitions
 		{
 			get { return _rowDefinitions.AsReadOnly(); }
 		}
@@ -87,12 +87,12 @@ namespace Intuitive_GUI_for_Monogame.Items
 			primarySelectionSpecified = true;
 		}
 
-		public void AddColumnDefinition(ColumnDefinition columnDefinition)
+		public void AddColumnDefinition(Definition columnDefinition)
 		{
 			_columnDefinitions.Add(columnDefinition);
 		}
 
-		public void AddRowDefinition(RowDefinition rowDefinition)
+		public void AddRowDefinition(Definition rowDefinition)
 		{
 			_rowDefinitions.Add(rowDefinition);
 		}
@@ -171,12 +171,12 @@ namespace Intuitive_GUI_for_Monogame.Items
 			{
 				switch (_columnDefinitions[i].DefinitionType)
 				{
-					case ColumnDefinition.DefinitionTypes.Fixed:
-						columnWidths[i] = _columnDefinitions[i].Width;
-						totalWidth += _columnDefinitions[i].Width;
+					case Definition.DefinitionTypes.Fixed:
+						columnWidths[i] = _columnDefinitions[i].FixedLength;
+						totalWidth += _columnDefinitions[i].FixedLength;
 						break;
 
-					case ColumnDefinition.DefinitionTypes.Auto:
+					case Definition.DefinitionTypes.Auto:
 						int largest = 0;
 						foreach (GridEntry gridEntry in Children)
 							if (gridEntry.Column == i)
@@ -197,7 +197,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 						totalWidth += largest;
 						break;
 
-					case ColumnDefinition.DefinitionTypes.Fill:
+					case Definition.DefinitionTypes.Fill:
 						starColumns.Add(i);
 						break;
 				}
@@ -228,12 +228,12 @@ namespace Intuitive_GUI_for_Monogame.Items
 			{
 				switch (_rowDefinitions[i].DefinitionType)
 				{
-					case RowDefinition.DefinitionTypes.Fixed:
-						rowHeights[i] = _rowDefinitions[i].Height;
-						totalHeight += _rowDefinitions[i].Height;
+					case Definition.DefinitionTypes.Fixed:
+						rowHeights[i] = _rowDefinitions[i].FixedLength;
+						totalHeight += _rowDefinitions[i].FixedLength;
 						break;
 
-					case RowDefinition.DefinitionTypes.Auto:
+					case Definition.DefinitionTypes.Auto:
 						int largest = 0;
 						foreach (GridEntry gridEntry in Children)
 							if (gridEntry.Row == i)
@@ -254,7 +254,7 @@ namespace Intuitive_GUI_for_Monogame.Items
 						totalHeight += largest;
 						break;
 
-					case RowDefinition.DefinitionTypes.Fill:
+					case Definition.DefinitionTypes.Fill:
 						starRows.Add(i);
 						break;
 				}
@@ -480,70 +480,6 @@ namespace Intuitive_GUI_for_Monogame.Items
 		{
 			this.Column = column;
 			this.Row = row;
-		}
-	}
-
-	public class ColumnDefinition
-	{
-		public enum DefinitionTypes { Fixed, Auto, Fill }
-		public DefinitionTypes DefinitionType { get; set; }
-		public int Width { get; set; } = 0;
-
-		public static ColumnDefinition Auto { get; private set; } = new ColumnDefinition(DefinitionTypes.Auto);
-		public static ColumnDefinition Fill { get; private set; } = new ColumnDefinition(DefinitionTypes.Fill);
-
-		/// <summary>
-		/// Defines a column in a grid.
-		/// </summary>
-		/// <param name="width">The fixed width of the column.</param>
-		public ColumnDefinition(int width)
-		{
-			DefinitionType = DefinitionTypes.Fixed;
-			this.Width = width;
-		}
-
-		/// <summary>
-		/// Defines a column in a grid.
-		/// </summary>
-		/// <param name="definitionType">
-		/// Fixed: A width you can specify here as an integer.
-		/// Auto: Takes up only the space of its widest item. 
-		/// Fill: Takes up all remaining space on the grid, divided evenly between any other columns of this type.</param>
-		public ColumnDefinition(DefinitionTypes definitionType)
-		{
-			this.DefinitionType = definitionType;
-		}
-	}
-
-	public class RowDefinition
-	{
-		public enum DefinitionTypes { Fixed, Auto, Fill }
-		public DefinitionTypes DefinitionType { get; set; }
-		public int Height { get; set; } = 0;
-
-		public static RowDefinition Auto { get; private set; } = new RowDefinition(DefinitionTypes.Auto);
-		public static RowDefinition Fill { get; private set; } = new RowDefinition(DefinitionTypes.Fill);
-
-		/// <summary>
-		/// Defines a row in a grid.
-		/// </summary>
-		/// <param name="height">The fixed height of the row.</param>
-		public RowDefinition(int height)
-		{
-			DefinitionType = DefinitionTypes.Fixed;
-			this.Height = height;
-		}
-
-		/// <summary>
-		/// Defines a row in a grid.
-		/// </summary>
-		/// <param name="definitionType">
-		/// Fixed: A height you can specify here as an integer.
-		/// Auto: Takes up only the space of its tallest item. 
-		/// Fill: Takes up all remaining space on the grid, divided evenly between any other rows of this type.</param>
-		public RowDefinition(DefinitionTypes definitionType)
-		{
-			this.DefinitionType = definitionType;
 		}
 	}
 

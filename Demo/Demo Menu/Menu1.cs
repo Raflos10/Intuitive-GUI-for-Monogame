@@ -40,10 +40,10 @@ namespace Demo.Demo_Menu
 
             Grid subGrid = new Grid();
 
-            subGrid.AddColumnDefinition(ColumnDefinition.Auto);
-            subGrid.AddColumnDefinition(ColumnDefinition.Auto);
-            subGrid.AddRowDefinition(RowDefinition.Auto);
-            subGrid.AddRowDefinition(RowDefinition.Auto);
+            subGrid.AddColumnDefinition(Definition.Auto);
+            subGrid.AddColumnDefinition(Definition.Auto);
+            subGrid.AddRowDefinition(Definition.Auto);
+            subGrid.AddRowDefinition(Definition.Auto);
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("0, 0")), 0, 0);
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("1, 0")), 1, 0);
             subGrid.AddChild(new Menu1Button(buttonTexture2, OnButtonPress, new ButtonArgs("0, 1")), 0, 1);
@@ -52,17 +52,17 @@ namespace Demo.Demo_Menu
             Grid mainGrid = new Grid(new Margin(100, 0, 100, 0));
             mainGrid.PersistantHighlight = true;
 
-            mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
-            mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
-            mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
-            mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
-            mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
-            mainGrid.AddColumnDefinition(ColumnDefinition.Fill);
-            mainGrid.AddRowDefinition(RowDefinition.Auto);
-            mainGrid.AddRowDefinition(RowDefinition.Auto);
-            mainGrid.AddRowDefinition(RowDefinition.Auto);
-            mainGrid.AddRowDefinition(RowDefinition.Auto);
-            mainGrid.AddRowDefinition(RowDefinition.Fill);
+            mainGrid.AddColumnDefinition(Definition.Auto);
+            mainGrid.AddColumnDefinition(Definition.Auto);
+            mainGrid.AddColumnDefinition(Definition.Auto);
+            mainGrid.AddColumnDefinition(Definition.Auto);
+            mainGrid.AddColumnDefinition(Definition.Auto);
+            mainGrid.AddColumnDefinition(Definition.Fill);
+            mainGrid.AddRowDefinition(Definition.Auto);
+            mainGrid.AddRowDefinition(Definition.Auto);
+            mainGrid.AddRowDefinition(Definition.Auto);
+            mainGrid.AddRowDefinition(Definition.Auto);
+            mainGrid.AddRowDefinition(Definition.Fill);
 
             mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("0, 0")), 0, 0);
             mainGrid.AddChild(new Menu1Button(buttonTexture1, OnButtonPress, new ButtonArgs("1, 0")), 1, 0);
@@ -96,10 +96,10 @@ namespace Demo.Demo_Menu
 			Random random = new Random();
 
 			Grid subGrid1 = new Grid();
-			subGrid1.AddColumnDefinition(ColumnDefinition.Auto);
-			subGrid1.AddColumnDefinition(ColumnDefinition.Auto);
-			subGrid1.AddRowDefinition(RowDefinition.Auto);
-			subGrid1.AddRowDefinition(RowDefinition.Auto);
+			subGrid1.AddColumnDefinition(Definition.Auto);
+			subGrid1.AddColumnDefinition(Definition.Auto);
+			subGrid1.AddRowDefinition(Definition.Auto);
+			subGrid1.AddRowDefinition(Definition.Auto);
 
 			Point subGrid1Location = randomLocation();
 
@@ -108,10 +108,10 @@ namespace Demo.Demo_Menu
 					subGrid1.AddChild(randomElement(x,y,true), x, y);
 
 					Grid subGrid2 = new Grid();
-			subGrid2.AddColumnDefinition(ColumnDefinition.Auto);
-			subGrid2.AddColumnDefinition(ColumnDefinition.Auto);
-			subGrid2.AddRowDefinition(RowDefinition.Auto);
-			subGrid2.AddRowDefinition(RowDefinition.Auto);
+			subGrid2.AddColumnDefinition(Definition.Auto);
+			subGrid2.AddColumnDefinition(Definition.Auto);
+			subGrid2.AddRowDefinition(Definition.Auto);
+			subGrid2.AddRowDefinition(Definition.Auto);
 
 			Point subGrid2Location = randomLocation();
 
@@ -125,17 +125,17 @@ namespace Demo.Demo_Menu
 			Grid mainGrid = new Grid(new Margin(100, 0, 100, 0));
 			mainGrid.PersistantHighlight = true;
 
-			mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
-			mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
-			mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
-			mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
-			mainGrid.AddColumnDefinition(ColumnDefinition.Auto);
-			mainGrid.AddColumnDefinition(ColumnDefinition.Fill);
-			mainGrid.AddRowDefinition(RowDefinition.Auto);
-			mainGrid.AddRowDefinition(RowDefinition.Auto);
-			mainGrid.AddRowDefinition(RowDefinition.Auto);
-			mainGrid.AddRowDefinition(RowDefinition.Auto);
-			mainGrid.AddRowDefinition(RowDefinition.Fill);
+			mainGrid.AddColumnDefinition(Definition.Auto);
+			mainGrid.AddColumnDefinition(Definition.Auto);
+			mainGrid.AddColumnDefinition(Definition.Auto);
+			mainGrid.AddColumnDefinition(Definition.Auto);
+			mainGrid.AddColumnDefinition(Definition.Auto);
+			mainGrid.AddColumnDefinition(Definition.Fill);
+			mainGrid.AddRowDefinition(Definition.Auto);
+			mainGrid.AddRowDefinition(Definition.Auto);
+			mainGrid.AddRowDefinition(Definition.Auto);
+			mainGrid.AddRowDefinition(Definition.Auto);
+			mainGrid.AddRowDefinition(Definition.Fill);
 
 			for (int x = 0; x < 5; x++)
 				for (int y = 0; y < 4; y++)
