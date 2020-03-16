@@ -168,7 +168,7 @@ namespace Intuitive_GUI_for_Monogame.Items
             int[] lengths = new int[definitions.Count];
 
             // must list each fill definition
-            List<int> fillDefs = new List<int>();
+            HashSet<int> fillDefs = new HashSet<int>();
             int totalLength = 0;
 
             for (int i = 0; i < definitions.Count; i++)
@@ -181,26 +181,28 @@ namespace Intuitive_GUI_for_Monogame.Items
                         // each fixed definition just adds to the overall length
                         break;
 
+                    // take the length of the longest element in this segment collection
                     case Definition.DefinitionTypes.Auto:
                         int largest = 0;
                         // collection of each gridentry in this segment
-                        IEnumerable<Point> pointsInThisSegment = _gridEntries.Keys.Where(kvp => column ? kvp.X == i : kvp.Y == i);
-                        foreach (Point point in pointsInThisSegment)
+                        Dictionary<Point, UIElement> elementsInThisSegment = _gridEntries.Where(kvp => column ? kvp.Key.X == i : kvp.Key.Y == i)
+                                                                            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                        foreach (UIElement element in elementsInThisSegment.Values)
                         {
-                            // there is no way for a grid to be built without a fixed size, so change it to fill
+                            // there is no way for a grid to be built without a fixed size
                             //TODO BuildGridVariableSize(out int width, out int height) returns a total width and height, fill columns/rows become zero
-                            if (_gridEntries[point] is Grid grid)
+                            if (element is Grid grid)
                             {
-                                // for now just convert the auto-segments to fill-segments
-                                if (!fillDefs.Contains(i))
+                                if (elementsInThisSegment.Values.Count == 1)
                                     fillDefs.Add(i);
                                 continue;
                             }
+
                             int lengthAndMargin = 0;
                             if (column)
-                                lengthAndMargin = _gridEntries[point].Width + _gridEntries[point].Margin.Left + _gridEntries[point].Margin.Right;
+                                lengthAndMargin = element.Width + element.Margin.Left + element.Margin.Right;
                             else
-                                lengthAndMargin = _gridEntries[point].Height + _gridEntries[point].Margin.Top + _gridEntries[point].Margin.Bottom;
+                                lengthAndMargin = element.Height + element.Margin.Top + element.Margin.Bottom;
                             if (lengthAndMargin > largest)
                                 largest = lengthAndMargin;
                         }
@@ -217,8 +219,8 @@ namespace Intuitive_GUI_for_Monogame.Items
             // the length of: (whole segment minus all fixed and auto definitions), divided by the amount of fill definitions
             int fillLength = fillDefs.Count > 0 ? ((column ? Width : Height) - totalLength) / fillDefs.Count : 0;
 
-            for (int i = 0; i < fillDefs.Count; i++)
-                lengths[fillDefs[i]] = fillLength;
+            foreach (int i in fillDefs)
+                lengths[i] = fillLength;
 
             totalLength = 0;
             Segment[] result = new Segment[lengths.Length];
@@ -228,6 +230,13 @@ namespace Intuitive_GUI_for_Monogame.Items
                 totalLength += lengths[i];
             }
             return result;
+        }
+
+        public void CenterElement(UIElement element)
+        {
+            Point location = _gridEntries.First(kvp => kvp.Value == element).Key;
+            element.Margin = new Margin((columns[location.X].Length / 2) - (element.Width / 2), 
+                (rows[location.Y].Length / 2) - (element.Height / 2));
         }
 
         #region Selection With Mouse
