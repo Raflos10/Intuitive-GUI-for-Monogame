@@ -2,7 +2,9 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/Intuitive GUI for Monogame
-/.vs
-/Demo/bin/
-/Demo/obj/
+*.[Cc]ache
+.vs/
+obj/
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
