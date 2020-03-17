@@ -12,107 +12,118 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Intuitive_GUI_for_Monogame.Items
 {
-	public abstract class Selectable : UIElement
-	{
-		public bool Highlighted { get; private set; }
+    public abstract class Selectable : UIElement
+    {
+        public bool Highlighted { get; private set; }
 
-		/// <summary>
-		/// The element will remain highlighted even if the mouse goes outside this element.
-		/// </summary>
-		public bool PersistantHighlight { get; set; } = false;
+        /// <summary>
+        /// The element will remain highlighted even if the mouse goes outside this element.
+        /// </summary>
+        public bool PersistantHighlight { get; set; } = false;
 
-		/// <summary>
-		/// If true, the element will only highlight when the mouse is directly over it. 
-		/// <para>If false, the element will highlight as long as the mouse is inside its territory. </para>
-		/// </summary>
-		public bool StrictBoundingBox { get; set; } = true;
+        /// <summary>
+        /// If true, the element will only highlight when the mouse is directly over it. 
+        /// <para>If false, the element will highlight as long as the mouse is inside its territory. </para>
+        /// </summary>
+        public bool StrictBoundingBox { get; set; } = true;
 
-		/// <summary>
-		/// Determines whether the action should be invoked on mouse press or mouse release.
-		/// <para>Note: For now, button/key presses will always invoke actions on press, not release. </para>
-		/// <para>This also means that OnRelease will not be invoked by button/key presses. </para>
-		/// </summary>
-		public bool ActionOnRelease { get; set; } = false;
+        /// <summary>
+        /// Determines whether the action should be invoked on mouse press or mouse release.
+        /// <para>Note: For now, button/key presses will always invoke actions on press, not release. </para>
+        /// <para>This also means that OnRelease will not be invoked by button/key presses. </para>
+        /// </summary>
+        public bool ActionOnRelease { get; set; } = false;
 
-		public EventHandler OnHighlight, OnUnhighlight, OnMouseClick, OnMouseRelease, OnButtonTrigger, Action, OnMouseClickOutside,
-			OnMouseReleaseOutside, OnSwitchInputMethod;
+        public EventHandler OnHighlight, OnUnhighlight, OnMouseClick, OnMouseRelease, OnButtonTrigger, Action, OnMouseClickOutside,
+            OnMouseReleaseOutside, OnSwitchInputMethod;
 
-		public EventArgs Args { get; set; }
+        public EventArgs Args { get; set; }
 
-		public virtual void Highlight()
-		{
-			if (!Highlighted)
-				OnHighlight?.Invoke(this, EventArgs.Empty);
-			Highlighted = true;
-		}
+        public virtual void Highlight()
+        {
+            if (!Highlighted)
+                OnHighlight?.Invoke(this, EventArgs.Empty);
+            Highlighted = true;
+        }
 
-		public virtual void Unhighlight()
-		{
-			if (Highlighted)
-				OnUnhighlight?.Invoke(this, EventArgs.Empty);
-			Highlighted = false;
-		}
+        public virtual void Unhighlight()
+        {
+            if (Highlighted)
+                OnUnhighlight?.Invoke(this, EventArgs.Empty);
+            Highlighted = false;
+        }
 
-		public virtual void MouseClick(Vector2 mouseGlobalPosition)
-		{
-			if (ContainsMouse(mouseGlobalPosition))
-			{
-				OnMouseClick?.Invoke(this, Args);
-				if (!ActionOnRelease)
-					Action?.Invoke(this, Args);
-			}
-			else
-				OnMouseClickOutside?.Invoke(this, Args);
-		}
+        public virtual void MouseUpdate(Vector2 mouseGlobalPosition)
+        {
+            if (ContainsMouse(mouseGlobalPosition))
+            {
+                if (!Highlighted)
+                    Highlight();
+            }
+            else if (Highlighted && !PersistantHighlight)
+                Unhighlight();
+        }
 
-		public virtual void MouseRelease(Vector2 mouseGlobalPosition)
-		{
-			if (ContainsMouse(mouseGlobalPosition))
-			{
-				OnMouseRelease?.Invoke(this, Args);
-				if (ActionOnRelease)
-					Action?.Invoke(this, Args);
-			}
-			else
-				OnMouseReleaseOutside?.Invoke(this, Args);
-		}
+        public virtual void MouseClick(Vector2 mouseGlobalPosition)
+        {
+            if (ContainsMouse(mouseGlobalPosition))
+            {
+                OnMouseClick?.Invoke(this, Args);
+                if (!ActionOnRelease)
+                    Action?.Invoke(this, Args);
+            }
+            else
+                OnMouseClickOutside?.Invoke(this, Args);
+        }
 
-		public virtual void InputTrigger(Menu.MenuInputs input)
-		{
-			if (input == Menu.MenuInputs.OK)
-			{
-				OnButtonTrigger?.Invoke(this, Args);
-				Action?.Invoke(this, Args);
-			}
-		}
+        public virtual void MouseRelease(Vector2 mouseGlobalPosition)
+        {
+            if (ContainsMouse(mouseGlobalPosition))
+            {
+                OnMouseRelease?.Invoke(this, Args);
+                if (ActionOnRelease)
+                    Action?.Invoke(this, Args);
+            }
+            else
+                OnMouseReleaseOutside?.Invoke(this, Args);
+        }
 
-		public virtual bool ContainsMouse(Vector2 mouseGlobalPosition)
-		{
-			return ContainsMouse(mouseGlobalPosition, StrictBoundingBox);
-		}
+        public virtual void InputTrigger(Menu.MenuInputs input)
+        {
+            if (input == Menu.MenuInputs.OK)
+            {
+                OnButtonTrigger?.Invoke(this, Args);
+                Action?.Invoke(this, Args);
+            }
+        }
 
-		public bool ContainsMouse(Vector2 mouseGlobalPosition, bool strictBoundingBox)
-		{
-			Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
+        public virtual bool ContainsMouse(Vector2 mouseGlobalPosition)
+        {
+            return ContainsMouse(mouseGlobalPosition, StrictBoundingBox);
+        }
 
-			if (strictBoundingBox)
-			{
-				if (mouseLocalPosition.X >= Margin.Left && mouseLocalPosition.Y >= Margin.Top &&
-					mouseLocalPosition.X <= Width + Margin.Left && mouseLocalPosition.Y <= Height + Margin.Top)
-					return true;
-			}
-			else if (mouseLocalPosition.X >= 0 && mouseLocalPosition.Y >= 0 &&
-				mouseLocalPosition.X <= BoundingWidth && mouseLocalPosition.Y <= BoundingHeight)
-				return true;
+        public bool ContainsMouse(Vector2 mouseGlobalPosition, bool strictBoundingBox)
+        {
+            Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
 
-			return false;
-		}
+            if (strictBoundingBox)
+            {
+                if (mouseLocalPosition.X >= Margin.Left && mouseLocalPosition.Y >= Margin.Top &&
+                    mouseLocalPosition.X <= Width + Margin.Left && mouseLocalPosition.Y <= Height + Margin.Top)
+                    return true;
+            }
+            else if (mouseLocalPosition.X >= 0 && mouseLocalPosition.Y >= 0 &&
+                mouseLocalPosition.X <= BoundingWidth && mouseLocalPosition.Y <= BoundingHeight)
+                return true;
 
-		protected Vector2 GetMouseLocalPosition(Vector2 mouseGlobalPosition)
-		{
-			return Vector2.Transform(mouseGlobalPosition, Matrix.Invert(ParentMatrix));
-		}
+            return false;
+        }
 
-		public virtual void ResetSelection() { }
-	}
+        protected Vector2 GetMouseLocalPosition(Vector2 mouseGlobalPosition)
+        {
+            return Vector2.Transform(mouseGlobalPosition, Matrix.Invert(ParentMatrix));
+        }
+
+        public virtual void ResetSelection() { }
+    }
 }

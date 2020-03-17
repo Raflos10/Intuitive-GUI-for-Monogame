@@ -83,8 +83,6 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
             return resultCandidate;
         }
-
-        public abstract void MouseUpdate(Vector2 mouseGlobalPosition);
     }
 
     public class Definition

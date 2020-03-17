@@ -178,7 +178,7 @@ namespace Intuitive_GUI_for_Monogame
         {
             if (Active)
             {
-                if (Item is Items.Selectable selectable)
+                if (Item is Selectable selectable)
                 {
                     if (!usingMouse)
                     {
@@ -186,15 +186,7 @@ namespace Intuitive_GUI_for_Monogame
                         usingMouse = true;
                     }
 
-                    if (selectable.ContainsMouse(mouseGlobalPosition))
-                    {
-                        if (!selectable.Highlighted)
-                            selectable.Highlight();
-                        if (selectable is UIContainer container)
-                            container.MouseUpdate(mouseGlobalPosition);
-                    }
-                    else if (selectable.Highlighted && !selectable.PersistantHighlight)
-                        selectable.Unhighlight();
+                    selectable.MouseUpdate(mouseGlobalPosition);
 
                     if (mouseState.LeftButton == ButtonState.Pressed && mouseStateLast.LeftButton == ButtonState.Released)
                         selectable.MouseClick(mouseGlobalPosition);

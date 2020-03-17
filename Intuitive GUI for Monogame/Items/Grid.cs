@@ -235,7 +235,7 @@ namespace Intuitive_GUI_for_Monogame.Items
         public void CenterElement(UIElement element)
         {
             Point location = _gridEntries.First(kvp => kvp.Value == element).Key;
-            element.Margin = new Margin((columns[location.X].Length / 2) - (element.Width / 2), 
+            element.Margin = new Margin((columns[location.X].Length / 2) - (element.Width / 2),
                 (rows[location.Y].Length / 2) - (element.Height / 2));
         }
 
@@ -245,39 +245,54 @@ namespace Intuitive_GUI_for_Monogame.Items
         {
             if (IsSelectable)
             {
+                // if this grid is having MouseUpdate called, it should be highlighted
+                if (!Highlighted && ContainsMouse(mouseGlobalPosition))
+                    Highlight();
+
                 // mouse has not gone outside selected space
                 if (SelectedElement.ContainsMouse(mouseGlobalPosition))
+                {
+                    SelectedElement.MouseUpdate(mouseGlobalPosition);
                     return;
+                }
 
                 Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
 
                 // mouse is currently outside selected space
 
-                Point mousePoint = selection;
-
                 // get new space where the mouse is
-                mousePoint.X = Array.IndexOf(columns, columns.Where(x => x.PostPosition >= mouseLocalPosition.X && x.PrePosition <= mouseLocalPosition.X));
-                mousePoint.Y = Array.IndexOf(rows, rows.Where(x => x.PostPosition >= mouseLocalPosition.Y && x.PrePosition <= mouseLocalPosition.Y));
-
-                // if mouse is over a selectable region
-                if (_gridEntries.ContainsKey(mousePoint) && _gridEntries[mousePoint] is Selectable selectable)
+                IEnumerable<Segment> xSegments = columns.Where(c => c.PostPosition >= mouseLocalPosition.X && c.PrePosition <= mouseLocalPosition.X);
+                IEnumerable<Segment> ySegments = rows.Where(r => r.PostPosition >= mouseLocalPosition.Y && r.PrePosition <= mouseLocalPosition.Y);
+                if (xSegments.Any() && ySegments.Any())
                 {
-                    // if it's not a selectable container, don't do anything yet
-                    if (selectable is UIContainer container && !container.IsSelectable)
+                    Point mousePoint = new Point()
+                    {
+                        X = Array.IndexOf(columns, xSegments.First()),
+                        Y = Array.IndexOf(rows, ySegments.First())
+                    };
+
+                    // if mouse is over a selectable region
+                    if (_gridEntries.ContainsKey(mousePoint) && _gridEntries[mousePoint] is Selectable selectable)
+                    {
+                        // if it's not a selectable container, don't do anything yet
+                        if (selectable is UIContainer container && !container.IsSelectable)
+                            return;
+
+                        // if Persistant Highlight is on and the mouse isn't directly over the new selection, don't do anything yet
+                        if (PersistantHighlight && selectable.StrictBoundingBox && !selectable.ContainsMouse(mouseGlobalPosition))
+                            return;
+                        if (SelectedElement.Highlighted)
+                            SelectedElement.Unhighlight();
+
+                        selection = mousePoint;
+                        ghostSelection = selection;
+
+                        selectable.MouseUpdate(mouseGlobalPosition);
                         return;
-
-                    // if Persistant Highlight is on and the mouse isn't directly over the new selection, don't do anything yet
-                    if (PersistantHighlight && selectable.StrictBoundingBox && !selectable.ContainsMouse(mouseGlobalPosition))
-                        return;
-                    else if (SelectedElement.Highlighted)
-                        SelectedElement.Unhighlight();
-
-                    selection = mousePoint;
-                    ghostSelection = selection;
-
-                    //SelectedElement.MouseUpdate(mouseGlobalPosition);
+                    }
                 }
-                else if (!PersistantHighlight && SelectedElement.Highlighted)
+
+                if (!PersistantHighlight && SelectedElement.Highlighted)
                     SelectedElement.Unhighlight();
             }
         }
