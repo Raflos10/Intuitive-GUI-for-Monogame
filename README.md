@@ -37,12 +37,12 @@ Then once you have an instance of a Grid, you can use AddColumnDefinition and Ad
 
 To create a fixed definition, you can just type an integer in the declaration. 
 ```
-grid.AddColumnDefinition(new ColumnDefinition(12));
+grid.AddColumnDefinition(new Definition(12));
 ```
 For Auto and Fill, you can just specify by referencing them like this
 ```
-grid.AddColumnDefinition(ColumnDefinition.Auto);
-grid.AddRowDefinition(RowDefinition.Fill);
+grid.AddColumnDefinition(Definition.Auto);
+grid.AddRowDefinition(Definition.Fill);
 ```
 After declaring these, it's possible to add children elements to the Grid using "AddChild". You must specify which Column and Row the child element should occupy. The element must be a subclass of "UIItem". The first integer is the column index (starting with "0) and the second integer is the row index.
 ```
@@ -55,8 +55,8 @@ grid.BuildGrid(new ColumnDefinition(800), new RowDefinition(600));
 ```
 
 ## More about Grids
-To center something inside a grid, it's easiest right now to have two empty columns/rows set as "fill". This way they fill evenly on either side of the item. 
 Grids can be added to grids, so you can make some fairly complex menus. 
+To center something inside a grid, you can call Grid.CenterElement(UIElement). This will modify the UIElement's margin to be even on all sides.
 
 ## Input
 Using the mouse is supported by default, just by adding the menusystem component to your game components. To use alternative input methods such as keyboard and gamepad, use the InputTrigger method in your menusystem instance along with the Menu.MenuInput enum.  
@@ -71,4 +71,4 @@ Other than Monogame itself, there are no mandatory dependencies.
 If you want to use Bitmap Fonts in your menus, you will need the optional .dll file which depends on [Monogame.Extended.dll](https://github.com/craftworkgames/MonoGame.Extended)
 
 # Demo
-In the demo you can right click to move the menu around, and use keys Q and E to rotate the menu to see how the UI items stay attached to the menu.
+In the demo you can right click to move the menu around, and use keys Q and E to rotate the menu to see how the UI items stay attached to the menu. Also you can press R to randomize the menu contents. 
