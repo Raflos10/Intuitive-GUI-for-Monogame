@@ -108,15 +108,28 @@ namespace Intuitive_GUI_for_Monogame.Items
 
             if (strictBoundingBox)
             {
-                if (mouseLocalPosition.X >= Margin.Left && mouseLocalPosition.Y >= Margin.Top &&
-                    mouseLocalPosition.X <= Width + Margin.Left && mouseLocalPosition.Y <= Height + Margin.Top)
-                    return true;
+                if (mouseLocalPosition.X < Margin.Left)
+                    return false;
+                if (mouseLocalPosition.Y < Margin.Top)
+                    return false;
+                if (mouseLocalPosition.X > Width + Margin.Left)
+                    return false;
+                if (mouseLocalPosition.Y > Height + Margin.Top)
+                    return false;
             }
-            else if (mouseLocalPosition.X >= 0 && mouseLocalPosition.Y >= 0 &&
-                mouseLocalPosition.X <= BoundingWidth && mouseLocalPosition.Y <= BoundingHeight)
-                return true;
+            else
+            {
+                if (mouseLocalPosition.X < 0)
+                    return false;
+                if (mouseLocalPosition.Y < 0)
+                    return false;
+                if (mouseLocalPosition.X > BoundingWidth)
+                    return false;
+                if (mouseLocalPosition.Y > BoundingHeight)
+                    return false;
+            }
 
-            return false;
+            return true;
         }
 
         protected Vector2 GetMouseLocalPosition(Vector2 mouseGlobalPosition)

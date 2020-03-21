@@ -31,7 +31,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Extended">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\MonoGame\Monogame Extended Build Ver\MonoGame.Extended.dll</HintPath>
+      <HintPath>..\..\MonoGame.Extended\Source\MonoGame.Extended\bin\Release\netstandard2.0\MonoGame.Extended.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

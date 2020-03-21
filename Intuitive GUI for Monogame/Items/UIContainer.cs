@@ -18,34 +18,27 @@ namespace Intuitive_GUI_for_Monogame.Items
         public abstract Selectable SelectedElement { get; }
         public bool IsSelectable { get; protected set; } = false;
 
-        public override void Highlight()
+        public virtual void HighlightInternal()
         {
             if (SelectedElement != null)
+            {
+                if (SelectedElement is UIContainer container)
+                    container.HighlightInternal();
                 SelectedElement.Highlight();
-            base.Highlight();
+            }
         }
 
-        public override void Unhighlight()
+        public virtual void UnhighlightInternal()
         {
             if (SelectedElement != null)
-                SelectedElement.Unhighlight();
-            base.Unhighlight();
-        }
-
-        public virtual void UnhighlightAll()
-        {
-            foreach (UIElement entry in Children)
-                switch (entry)
+            {
+                if (SelectedElement is UIContainer container)
                 {
-                    case UIContainer container:
-                        container.ResetSelection();
-                        container.UnhighlightAll();
-                        break;
-
-                    case Selectable selectable:
-                        selectable.Unhighlight();
-                        break;
+                    container.UnhighlightInternal();
+                    container.ResetSelection();
                 }
+                SelectedElement.Unhighlight();
+            }
         }
 
         public override void MouseClick(Vector2 mouseGlobalPosition)

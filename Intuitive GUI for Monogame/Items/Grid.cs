@@ -142,6 +142,7 @@ namespace Intuitive_GUI_for_Monogame.Items
                     primarySelection = new Point(column, row);
                 selection = primarySelection;
                 ghostSelection = primarySelection;
+                OnSwitchInputMethod += (sender, args) => UnhighlightInternal();
                 OnSwitchInputMethod += (sender, args) => Unhighlight();
                 IsSelectable = true;
             }
@@ -245,8 +246,17 @@ namespace Intuitive_GUI_for_Monogame.Items
         {
             if (IsSelectable)
             {
-                // if this grid is having MouseUpdate called, it should be highlighted
-                if (!Highlighted && ContainsMouse(mouseGlobalPosition))
+                // the mouse is completely outside the grid
+                if (!ContainsMouse(mouseGlobalPosition))
+                {
+                    if (Highlighted && !PersistantHighlight)
+                    {
+                        UnhighlightInternal();
+                        Unhighlight();
+                    }
+                    return;
+                }
+                else if (!Highlighted)
                     Highlight();
 
                 // mouse has not gone outside selected space
@@ -256,45 +266,66 @@ namespace Intuitive_GUI_for_Monogame.Items
                     return;
                 }
 
-                Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
+                // mouse is outside selected space but still inside grid
 
-                // mouse is currently outside selected space
+                Point mousePoint = GetMouseCoordinates(mouseGlobalPosition);
 
-                // get new space where the mouse is
-                IEnumerable<Segment> xSegments = columns.Where(c => c.PostPosition >= mouseLocalPosition.X && c.PrePosition <= mouseLocalPosition.X);
-                IEnumerable<Segment> ySegments = rows.Where(r => r.PostPosition >= mouseLocalPosition.Y && r.PrePosition <= mouseLocalPosition.Y);
-                if (xSegments.Any() && ySegments.Any())
+                // if mouse is over a selectable region
+                if (_gridEntries.ContainsKey(mousePoint) && _gridEntries[mousePoint] is Selectable selectable)
                 {
-                    Point mousePoint = new Point()
-                    {
-                        X = Array.IndexOf(columns, xSegments.First()),
-                        Y = Array.IndexOf(rows, ySegments.First())
-                    };
-
-                    // if mouse is over a selectable region
-                    if (_gridEntries.ContainsKey(mousePoint) && _gridEntries[mousePoint] is Selectable selectable)
-                    {
-                        // if it's not a selectable container, don't do anything yet
-                        if (selectable is UIContainer container && !container.IsSelectable)
-                            return;
-
-                        // if Persistant Highlight is on and the mouse isn't directly over the new selection, don't do anything yet
-                        if (PersistantHighlight && selectable.StrictBoundingBox && !selectable.ContainsMouse(mouseGlobalPosition))
-                            return;
-                        if (SelectedElement.Highlighted)
-                            SelectedElement.Unhighlight();
-
-                        selection = mousePoint;
-                        ghostSelection = selection;
-
-                        selectable.MouseUpdate(mouseGlobalPosition);
+                    // if it's not a selectable container, don't do anything yet
+                    if (selectable is UIContainer container && !container.IsSelectable)
                         return;
-                    }
+
+                    // if Persistant Highlight is on and the mouse isn't directly over the new selection, don't do anything yet
+                    bool newSelectableContainsMouse = selectable.ContainsMouse(mouseGlobalPosition);
+                    if (PersistantHighlight && !newSelectableContainsMouse)
+                        return;
+
+                    // definitely changing selection now
+                    // previous element should unhighlight itself
+                    SelectedElement.MouseUpdate(mouseGlobalPosition);
+
+                    selection = mousePoint;
+                    ghostSelection = selection;
+
+                    // new element should highlight itself
+                    selectable.MouseUpdate(mouseGlobalPosition);
+
+                    return;
                 }
 
+                // mouse is in an unselectable area in the grid
                 if (!PersistantHighlight && SelectedElement.Highlighted)
-                    SelectedElement.Unhighlight();
+                    UnhighlightInternal();
             }
+        }
+
+        // finds which column and row the mouse is located inside
+        Point GetMouseCoordinates(Vector2 mouseGlobalPosition)
+        {
+            Point result = new Point();
+            Vector2 mouseLocalPosition = GetMouseLocalPosition(mouseGlobalPosition);
+
+            for (int i = 0; i < columns.Length; i++)
+            {
+                if (mouseLocalPosition.X > columns[i].PostPosition)
+                    continue;
+                if (mouseLocalPosition.X > columns[i].PrePosition)
+                    result.X = i;
+                break;
+            }
+
+            for (int i = 0; i < rows.Length; i++)
+            {
+                if (mouseLocalPosition.Y > rows[i].PostPosition)
+                    continue;
+                if (mouseLocalPosition.Y > rows[i].PrePosition)
+                    result.Y = i;
+                break;
+            }
+
+            return result;
         }
 
         #endregion
@@ -318,10 +349,7 @@ namespace Intuitive_GUI_for_Monogame.Items
         public override void ResetSelection()
         {
             if (IsSelectable)
-            {
-                UnhighlightAll();
                 ChangeSelection(primarySelection.X, primarySelection.Y);
-            }
         }
 
         #region Keyboard Input
@@ -339,9 +367,9 @@ namespace Intuitive_GUI_for_Monogame.Items
 
         public override bool HandleSelectionChange(Menu.MenuInputs input)
         {
-            if (SelectedElement is UIContainer container)
-                if (container.HandleSelectionChange(input))
-                    return true;
+            UIContainer container = SelectedElement as UIContainer;
+            if (container != null && container.HandleSelectionChange(input))
+                return true;
 
             int columnPlus = input == Menu.MenuInputs.Left ? -1 : input == Menu.MenuInputs.Right ? 1 : 0;
             int rowPlus = input == Menu.MenuInputs.Up ? -1 : input == Menu.MenuInputs.Down ? 1 : 0;
@@ -356,12 +384,14 @@ namespace Intuitive_GUI_for_Monogame.Items
                     if (selectableRowsInColumn.ContainsKey(i))
                     {
                         int selectableRow = GetClosestNumber(ghostSelection.Y, selectableRowsInColumn[i].ToArray());
-                        Unhighlight();
+                        container?.UnhighlightInternal();
+                        SelectedElement.Unhighlight();
                         ghostSelection.X = i;
                         ChangeSelection(i, selectableRow);
-                        if (_gridEntries[new Point(i, selectableRow)] is UIContainer container1)
-                            container1.HighlightFromOutside(input);
-                        Highlight();
+                        container = SelectedElement as UIContainer;
+                        container?.HighlightFromOutside(input);
+                        SelectedElement.Highlight();
+                        container?.HighlightInternal();
                         break;
                     }
             }
@@ -371,12 +401,14 @@ namespace Intuitive_GUI_for_Monogame.Items
                     if (selectableColumnsInRow.ContainsKey(i))
                     {
                         int selectableColumn = GetClosestNumber(ghostSelection.X, selectableColumnsInRow[i].ToArray());
-                        if (_gridEntries[new Point(selectableColumn, i)] is UIContainer container1)
-                            container1.HighlightFromOutside(input);
-                        Unhighlight();
+                        container?.UnhighlightInternal();
+                        SelectedElement.Unhighlight();
                         ghostSelection.Y = i;
                         ChangeSelection(selectableColumn, i);
-                        Highlight();
+                        container = SelectedElement as UIContainer;
+                        container?.HighlightFromOutside(input);
+                        SelectedElement.Highlight();
+                        container?.HighlightInternal();
                         break;
                     }
             }

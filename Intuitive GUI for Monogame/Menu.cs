@@ -135,7 +135,11 @@ namespace Intuitive_GUI_for_Monogame
         void HighlightIfDefault(object sender, EventArgs e)
         {
             if (HighlightedByDefault && item is Items.Selectable selectable)
+            {
+                if (selectable is UIContainer container)
+                    container.HighlightInternal();
                 selectable.Highlight();
+            }
         }
 
         void ResetSelection(object sender, EventArgs e)
