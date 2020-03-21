@@ -33,10 +33,7 @@ namespace Intuitive_GUI_for_Monogame.Items
             if (SelectedElement != null)
             {
                 if (SelectedElement is UIContainer container)
-                {
                     container.UnhighlightInternal();
-                    container.ResetSelection();
-                }
                 SelectedElement.Unhighlight();
             }
         }

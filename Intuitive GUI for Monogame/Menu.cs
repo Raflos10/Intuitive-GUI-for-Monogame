@@ -163,12 +163,14 @@ namespace Intuitive_GUI_for_Monogame
                     {
                         selectable.OnSwitchInputMethod?.Invoke(this, EventArgs.Empty);
                         usingMouse = false;
-                    }
 
-                    if (!HighlightedByDefault && !selectable.Highlighted)
-                    {
-                        selectable.Highlight();
-                        return;
+                        if (!selectable.Highlighted)
+                        {
+                            if (selectable is UIContainer container)
+                                container.HighlightInternal();
+                            selectable.Highlight();
+                            return;
+                        }
                     }
 
                     selectable.InputTrigger(input);
@@ -187,6 +189,9 @@ namespace Intuitive_GUI_for_Monogame
                     if (!usingMouse)
                     {
                         selectable.OnSwitchInputMethod?.Invoke(this, EventArgs.Empty);
+                        if (selectable is UIContainer container)
+                            container.UnhighlightInternal();
+                        selectable.Unhighlight();
                         usingMouse = true;
                     }
 

@@ -142,8 +142,6 @@ namespace Intuitive_GUI_for_Monogame.Items
                     primarySelection = new Point(column, row);
                 selection = primarySelection;
                 ghostSelection = primarySelection;
-                OnSwitchInputMethod += (sender, args) => UnhighlightInternal();
-                OnSwitchInputMethod += (sender, args) => Unhighlight();
                 IsSelectable = true;
             }
         }
@@ -365,6 +363,7 @@ namespace Intuitive_GUI_for_Monogame.Items
             }
         }
 
+        // returns true if internal, false if out of bounds
         public override bool HandleSelectionChange(Menu.MenuInputs input)
         {
             UIContainer container = SelectedElement as UIContainer;
