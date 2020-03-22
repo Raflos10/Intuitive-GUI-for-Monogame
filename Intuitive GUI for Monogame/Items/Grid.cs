@@ -192,8 +192,8 @@ namespace Intuitive_GUI_for_Monogame.Items
                             //TODO BuildGridVariableSize(out int width, out int height) returns a total width and height, fill columns/rows become zero
                             if (element is Grid grid)
                             {
-                                if (elementsInThisSegment.Values.Count == 1)
-                                    fillDefs.Add(i);
+                                //if (elementsInThisSegment.Values.Count == 1)
+                                fillDefs.Add(i);
                                 continue;
                             }
 
@@ -347,7 +347,11 @@ namespace Intuitive_GUI_for_Monogame.Items
         public override void ResetSelection()
         {
             if (IsSelectable)
+            {
+                UnhighlightInternal();
                 ChangeSelection(primarySelection.X, primarySelection.Y);
+                Unhighlight();
+            }
         }
 
         #region Keyboard Input
