@@ -22,7 +22,7 @@ namespace Intuitive_GUI_for_Monogame.Items
         {
             if (SelectedElement != null)
             {
-                if (SelectedElement is UIContainer container)
+                if (SelectedElement is UIContainer container && container.IsSelectable)
                     container.HighlightInternal();
                 SelectedElement.Highlight();
             }
@@ -32,7 +32,7 @@ namespace Intuitive_GUI_for_Monogame.Items
         {
             if (SelectedElement != null)
             {
-                if (SelectedElement is UIContainer container)
+                if (SelectedElement is UIContainer container && container.IsSelectable)
                     container.UnhighlightInternal();
                 SelectedElement.Unhighlight();
             }
